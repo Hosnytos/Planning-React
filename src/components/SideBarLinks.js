@@ -13,31 +13,31 @@ export const SideBarLinks = [
     },
     {
         title : 'Opérateur',
-        path : '/',
+        path : '/operateur',
         icon : <IoIcons.IoMdPeople/>,
         cName : 'sidebar-link-text'
     },
     {
         title : 'Compétences',
-        path : '/',
+        path : '/competences',
         icon : <IoIcons.IoIosSchool/>,
         cName : 'sidebar-link-text'
     },
     {
         title : 'Présence',
-        path : '/',
+        path : '/presence',
         icon : <IoIcons.IoIosPeople/>,
         cName : 'sidebar-link-text'
     },
     {
         title : 'Dashboard',
-        path : '/',
+        path : '/dashboard',
         icon : <FaIcons.FaChartPie/>,
         cName : 'sidebar-link-text'
     },
     {
         title : 'Support',
-        path : '/',
+        path : '/support',
         icon : <MdIcons.MdContactSupport/>,
         cName : 'sidebar-link-text'
     },

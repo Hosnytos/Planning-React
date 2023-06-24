@@ -1,3 +1,12 @@
+.container {
+  display: flex;
+}
+
+.hr-main {
+  flex-direction: row;
+  width: 100%;
+}
+
 .sidebar-container {
     width: 250px;
     background-color: #3dcd58;
