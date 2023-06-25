@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import "../styles/Operator.css";
 import colors from "../styles/colors";
 import DataTable from "react-data-table-component";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUserCheck, FaUserTimes } from "react-icons/fa";
 import { BiPlus } from "react-icons/bi";
+import { MdModeEdit, MdDelete } from "react-icons/md";
+import AddOperator from "./AddOperator";
 
 function Operator() {
+  const [addOperator, setAddOperator] = useState(false);
+
   const operators = [
     {
       idOperateur: 1,
@@ -245,7 +249,7 @@ function Operator() {
       isTeamLeader: 0,
       startDate: "2022-05-10",
       endDate: "2022-11-30",
-      activeStatus: 1,
+      activeStatus: 0,
     },
     {
       idOperateur: 21,
@@ -293,7 +297,7 @@ function Operator() {
       isTeamLeader: 0,
       startDate: "2022-02-15",
       endDate: "2022-09-30",
-      activeStatus: 1,
+      activeStatus: 0,
     },
     {
       idOperateur: 25,
@@ -407,18 +411,30 @@ function Operator() {
     },
     {
       name: "Statut",
-      selector: (row) => row.activeStatus,
-      sortable: true,
+      selector: (row) =>
+        row.activeStatus === 1 ? (
+          <FaUserCheck className="status-icon-active" />
+        ) : (
+          <FaUserTimes className="status-icon-inactive" />
+        ),
     },
     {
       name: "Action",
       cell: (row) => (
-        <button
-          className="btn btn-primary"
-          onClick={() => alert(row.nomOperateur)}
-        >
-          Modifier
-        </button>
+        <div>
+          <button
+            className="btn-edit-operator"
+            onClick={() => alert("Voulez vous modifier ?")}
+          >
+            <MdModeEdit />
+          </button>
+          <button
+            className="btn-delete-operator"
+            onClick={() => alert("Voulez vous supprimer ?")}
+          >
+            <MdDelete />
+          </button>
+        </div>
       ),
     },
   ];
@@ -429,6 +445,7 @@ function Operator() {
     table: {
       style: {
         borderRadius: "15px 15px 0 0",
+        zIndex: 0,
       },
     },
     headRow: {
@@ -438,6 +455,16 @@ function Operator() {
         borderRadius: "15px 15px 0 0",
         fontWeight: "bold",
         color: colors.white,
+      },
+    },
+    headCells: {
+      style: {
+        justifyContent: "center",
+      },
+    },
+    cells: {
+      style: {
+        justifyContent: "center",
       },
     },
     pagination: {
@@ -469,7 +496,12 @@ function Operator() {
               onChange={handleOperatorSearch}
             />
           </div>
-          <button className="button-add-operator">
+          <button
+            className="button-add-operator"
+            onClick={() => {
+              setAddOperator(true);
+            }}
+          >
             <BiPlus />
           </button>
         </div>
@@ -478,7 +510,6 @@ function Operator() {
           <DataTable
             columns={column}
             data={operatorSearch}
-            selectableRows
             pagination
             fixedHeader
             fixedHeaderScrollHeight="440px"
@@ -490,6 +521,7 @@ function Operator() {
           ></DataTable>
         </div>
       </div>
+      {addOperator && <AddOperator setOpenModal={setAddOperator} />}
     </div>
   );
 }
