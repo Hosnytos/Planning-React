@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "../styles/Operator.css";
+import colors from "../styles/colors";
 import DataTable from "react-data-table-component";
+import { FaSearch } from "react-icons/fa";
+import { BiPlus } from "react-icons/bi";
 
 function Operator() {
   const operators = [
@@ -368,7 +371,7 @@ function Operator() {
 
   const column = [
     {
-      name: "Opérateur",
+      name: "Nom",
       selector: (row) => row.nomOperateur,
       sortable: true,
     },
@@ -382,7 +385,7 @@ function Operator() {
       sortable: true,
     },
     {
-      name: "Type de contrat",
+      name: "Type",
       selector: (row) => row.type,
     },
     {
@@ -395,11 +398,11 @@ function Operator() {
       selector: (row) => row.isTeamLeader,
     },
     {
-      name: "Date d'entrée",
+      name: "Date entrée",
       selector: (row) => row.startDate,
     },
     {
-      name: "Date de fin",
+      name: "Date fin",
       selector: (row) => row.endDate,
     },
     {
@@ -423,18 +426,26 @@ function Operator() {
   const [operatorSearch, setOperatorSearch] = useState(operators);
 
   const customStyles = {
-    headRow : {
-      style : {
-        backgroundColor : '#3dcd58',
-        borderRadius : '15px 15px 0 0'
-      }
+    table: {
+      style: {
+        borderRadius: "15px 15px 0 0",
+      },
     },
-    pagination : {
-      style : {
-        borderRadius : '0 0 15px 15px'
-      }
+    headRow: {
+      style: {
+        backgroundColor: "#3dcd58",
+        textTransform: "uppercase",
+        borderRadius: "15px 15px 0 0",
+        fontWeight: "bold",
+        color: colors.white,
+      },
     },
-}
+    pagination: {
+      style: {
+        borderRadius: "0 0 15px 15px",
+      },
+    },
+  };
 
   function handleOperatorSearch(event) {
     const newOperator = operators.filter((row) => {
@@ -448,21 +459,37 @@ function Operator() {
 
   return (
     <div className="main-operator">
-      <div className="operator-search-bar">
-        <input type="text" placeholder="Recherche" onChange={handleOperatorSearch} />
+      <div>
+        <div className="operator-search-bar">
+          <div className="input-wrapper">
+            <FaSearch id="search-icon" />
+            <input
+              type="text"
+              placeholder="Recherche..."
+              onChange={handleOperatorSearch}
+            />
+          </div>
+          <button className="button-add-operator">
+            <BiPlus />
+          </button>
+        </div>
+        <hr className="operator-search-hr" />
+        <div className="data-table-container">
+          <DataTable
+            columns={column}
+            data={operatorSearch}
+            selectableRows
+            pagination
+            fixedHeader
+            fixedHeaderScrollHeight="440px"
+            highlightOnHover
+            pointerOnHover
+            responsive
+            customStyles={customStyles}
+            noDataComponent="Aucune information trouvée"
+          ></DataTable>
+        </div>
       </div>
-      <DataTable
-        columns={column}
-        data={operatorSearch}
-        selectableRows
-        pagination
-        fixedHeader
-        fixedHeaderScrollHeight="540px"
-        highlightOnHover
-        pointerOnHover
-        responsive
-        customStyles={customStyles}
-      ></DataTable>
     </div>
   );
 }
