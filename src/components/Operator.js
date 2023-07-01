@@ -506,16 +506,21 @@ function Operator() {
           </button>
         </div>
         <hr className="operator-search-hr" />
-        <div className="data-table-container">
+        <div>
           <DataTable
+            className="data-table-container"
             columns={column}
             data={operatorSearch}
+            responsive={true}
+            responsiveSm={true}
+            responsiveMd={true}
+            responsiveLg={true}
+            responsiveXl={true}
             pagination
             fixedHeader
             fixedHeaderScrollHeight="440px"
             highlightOnHover
             pointerOnHover
-            responsive
             customStyles={customStyles}
             noDataComponent="Aucune information trouvée"
           ></DataTable>

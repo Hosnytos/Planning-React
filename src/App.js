@@ -1,16 +1,18 @@
 import "./styles/App.css";
-import Sidebar from "./components/Sidebar";
+import MainContainer from "./components/MainContainer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Operator from "./components/Operator";
 import SupportPage from "./components/SupportPage";
+import PageNotFound from "./pages/error/PageNotFound";
 import { ToastContainer } from "react-toastify";
+// import LoginPage from "./pages/auth/LoginPage";
 
 function App() {
   return (
     <>
       <Router>
-        <Sidebar>
+        <MainContainer>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/operateur" element={<Operator />} />
@@ -19,9 +21,14 @@ function App() {
             <Route path="/dashboard" element={<Home />} />
             <Route path="/support" element={<SupportPage />} />
           </Routes>
-        </Sidebar>
+        </MainContainer>
+        {/* <Routes>
+          <Route path="/error" element={<PageNotFound />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes> */}
       </Router>
-      <ToastContainer/>
+
+      <ToastContainer />
     </>
   );
 }

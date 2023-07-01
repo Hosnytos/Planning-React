@@ -1,4 +1,5 @@
 .body {
-    padding: 0;
-    margin: 0;
+  margin: 0 auto;
+  height: 100h;
+  width: 100vw;
 }

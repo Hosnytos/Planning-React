@@ -9,12 +9,21 @@ function SupportPage() {
 
   const sendSupportEmail = (e) => {
     e.preventDefault();
-     emailjs.sendForm('service_xgrvdsp', 'template_v1joqud', supportForm.current, 'y9YE02ncNeaAKZN9z')
-          .then((result) => {
-              console.log(result.text);
-          }, (error) => {
-              console.log(error.text);
-          }); 
+    emailjs
+      .sendForm(
+        "service_xgrvdsp",
+        "template_v1joqud",
+        supportForm.current,
+        "y9YE02ncNeaAKZN9z"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
     toast.success("Votre message a été envoyé ! 🚀", {
       autoClose: 3000,
     });
@@ -38,12 +47,14 @@ function SupportPage() {
               className="support-input"
               placeholder="Votre nom"
               name="user_name"
+              required
             />
             <input
               type="email"
               className="support-input"
               placeholder="Votre adresse email"
               name="user_email"
+              required
             />
           </div>
           <div className="support-subject-container">
@@ -52,6 +63,7 @@ function SupportPage() {
               className="support-input"
               placeholder="Sujet du message"
               name="support_subject"
+              required
             />
           </div>
           <div className="support-message-container">
@@ -61,6 +73,7 @@ function SupportPage() {
               rows="10"
               cols="30"
               name="support_message"
+              required
             ></textarea>
           </div>
           <div className="support-submit-container">

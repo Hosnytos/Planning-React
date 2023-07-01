@@ -1,0 +1,21 @@
+.home-test {
+  background-color: aqua;
+  border: 1px solid blue;
+  height: 100vh;
+  display: flex;
+
+  align-items: center;
+  padding: 100px;
+}
+
+.vf1 {
+  background-color: yellow;
+  height: 50%;
+  width: 50%;
+}
+
+.vf2 {
+  background-color: brown;
+  height: 50%;
+  width: 50%;
+}
