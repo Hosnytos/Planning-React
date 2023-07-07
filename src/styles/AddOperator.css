@@ -9,8 +9,14 @@
   align-items: center;
 }
 
+.add-operator-search-hr {
+  margin: 5px 0 5px 0;
+  border-color: #f4f4f4;
+  width: 100%;
+}
+
 .modalContainer {
-  width: 500px;
+  width: 700px;
   height: 500px;
   border-radius: 12px;
   background-color: white;
@@ -22,7 +28,7 @@
 
 .titleCloseBtn {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .titleCloseBtn button {

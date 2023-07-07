@@ -398,10 +398,6 @@ function Operator() {
       sortable: true,
     },
     {
-      name: "TeamLeader",
-      selector: (row) => row.isTeamLeader,
-    },
-    {
       name: "Date entrée",
       selector: (row) => row.startDate,
     },
@@ -424,7 +420,9 @@ function Operator() {
         <div>
           <button
             className="btn-edit-operator"
-            onClick={() => alert("Voulez vous modifier ?")}
+            onClick={() => {
+              setAddOperator(true);
+            }}
           >
             <MdModeEdit />
           </button>

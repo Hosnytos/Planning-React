@@ -3,6 +3,7 @@ import * as AiIcons from 'react-icons/ai';
 import * as FaIcons from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';
 import * as MdIcons from 'react-icons/md';
+import * as BsIcons from 'react-icons/bs';
 
 export const SideBarLinks = [
     {
@@ -24,9 +25,9 @@ export const SideBarLinks = [
         cName : 'sidebar-link-text'
     },
     {
-        title : 'Présence',
-        path : '/presence',
-        icon : <IoIcons.IoIosPeople/>,
+        title : 'Saisie',
+        path : '/saisie',
+        icon : <BsIcons.BsCalendarWeekFill/>,
         cName : 'sidebar-link-text'
     },
     {
