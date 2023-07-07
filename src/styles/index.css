@@ -14,6 +14,15 @@ body {
 
 #root {
   position: relative;
+  --primLifeGreen: #3dcd58;
+  --backgroundGray: #d9d9d9;
+  --pv_orange: #ecc151;
+  --pv_lightGreen: #66e17d;
+  --pv_higherGreen: #3dcd58;
+  --pv_black: black;
+  --pv_white: white;
+  --pv_red: red;
+  --textGray: #8e8f92;
 }
 
 code {

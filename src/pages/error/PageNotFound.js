@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "../../styles/PageNotFound.css";
 import erro_img from "../../assets/undraw_404.svg";
+import { Link } from "react-router-dom";
+import AuthContext from "../auth/auth";
 
 function PageNotFound() {
   return (
@@ -13,13 +15,14 @@ function PageNotFound() {
             Sorry, we couldn’t find the page you’re looking for.
           </p>
           <div className="redirect-links">
-            <a href="/home" className="redirect-home">
+            <Link to={"/home"} className="redirect-home">
               Go back home
-            </a>
+            </Link>
+
             <div className="redirect-support">
-              <a href="/support">
+              <Link to={"/support"}>
                 Contact support <span aria-hidden="true">&rarr;</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -25,7 +25,8 @@ body {
   padding-top: 25px;
 }
 .support-form span {
-  color: #3dcd58;
+  /* color: #3dcd58; */
+  color: var(--pv_higherGreen);
 }
 
 .support-input,
@@ -41,13 +42,13 @@ body {
 
 .support-input:hover,
 .support-textarea:hover {
-  border: 1px solid #3dcd58;
-  outline: #3dcd58;
+  border: 1px solid var(--pv_higherGreen);
+  outline: var(--pv_higherGreen);
 }
 .support-input:focus,
 .support-textarea:focus {
-  border: 2px solid #3dcd58;
-  outline: #3dcd58;
+  border: 2px solid var(--pv_higherGreen);
+  outline: var(--pv_higherGreen);
 }
 
 .support-submit-container {
@@ -60,7 +61,7 @@ body {
   height: 50px;
   width: 200px;
   font-size: 22px;
-  background-color: #3dcd58;
+  background-color: var(--pv_higherGreen);
   color: white;
   border: none;
   box-shadow: 2px 5px 8px rgba(0, 0, 0, 0.45);

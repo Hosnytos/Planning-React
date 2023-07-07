@@ -1,6 +1,7 @@
 .dropdown {
   position: absolute;
   top: 68px;
+  right: -35px;
   width: 250px;
   transform: translateX(-20%);
   background-color: #f1f1f1;
@@ -33,4 +34,11 @@
 
 .menu-item:hover {
   background-color: #66e17d;
+}
+
+.teamleader-title {
+  font-size: 15px;
+  font-weight: 550;
+  font-style: italic;
+  color: rgba(63, 61, 86, 0.6);
 }

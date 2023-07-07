@@ -1,46 +1,55 @@
-import React, { useEffect, useRef } from "react";
+import AuthContext from "../pages/auth/auth";
+import { useContext } from "react";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { MdSwitchAccount } from "react-icons/md";
 import { GiSoccerKick } from "react-icons/gi";
 import "../styles/ProfileDropdown.css";
+import { Link, useNavigate } from "react-router-dom";
 
-function ProfileDropdown({ openProfile, handleSetOpenProfile }) {
+function ProfileDropdown() {
+  const { setAuth } = useContext(AuthContext);
+  const { setLogged } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   function DropdownItem(props) {
     return (
-      <a href={props.linkValue} className="menu-item">
+      <Link
+        to={props.linkValue}
+        className="menu-item"
+        onClick={props.handleOnClick}
+      >
         <span className="icon-button">{props.leftIcon}</span>
         {props.children}
         <span className="icon-right">{props.rightIcon}</span>
-      </a>
+      </Link>
     );
   }
 
-  let menuRef = useRef();
-
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        handleSetOpenProfile(!openProfile);
-        console.log("JE TESTE");
-        console.log(menuRef.current);
-      }
-    };
-
-    document.addEventListener("mousedown", handler);
-
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    };
-  });
+  const logout = () => {
+    setAuth({});
+    setLogged(false);
+    localStorage.setItem("isLogged", false);
+    localStorage.setItem("currentUser", "");
+    navigate("/login");
+    window.location.reload();
+  };
 
   return (
-    <div className="dropdown" ref={menuRef}>
-      <DropdownItem leftIcon={<MdSwitchAccount />}>Mon compte</DropdownItem>
+    <div className="dropdown">
+      <div className="teamleader-title">Team Leader</div>
+      <hr></hr>
+      <DropdownItem linkValue="/profile" leftIcon={<MdSwitchAccount />}>
+        Mon compte
+      </DropdownItem>
       <DropdownItem leftIcon={<GiSoccerKick />}>Section vide 1</DropdownItem>
       <DropdownItem leftIcon={<GiSoccerKick />}>Section vide 2</DropdownItem>
 
       <hr></hr>
-      <DropdownItem leftIcon={<RiLogoutCircleRLine />} linkValue="/logout">
+      <DropdownItem
+        handleOnClick={logout}
+        leftIcon={<RiLogoutCircleRLine />}
+        linkValue="/login"
+      >
         Se déconnecter
       </DropdownItem>
     </div>

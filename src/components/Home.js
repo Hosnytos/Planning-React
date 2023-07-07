@@ -6,8 +6,9 @@ function Home() {
     <div>
       Home
       <div className="home-test">
-        <div className="vf1">Section 1</div>
-        <div className="vf2">Section 2</div>
+        <div className="vf1">Section 1 test</div>
+        <div className="vf2">Section 2 test</div>
+        <div></div>
       </div>
     </div>
   );

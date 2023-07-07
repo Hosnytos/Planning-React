@@ -42,9 +42,13 @@
   font-weight: 600;
 }
 
-.redirect-support {
-  font-weight: 600;
-  color: rgb(35, 34, 46);
+.redirect-home:active {
+  background-color: #2da443;
+}
+
+.redirect-support a {
+  font-weight: 800;
+  color: rgb(63, 61, 86);
 }
 
 @media (max-width: 768px) {

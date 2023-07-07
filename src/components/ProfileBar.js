@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../styles/ProfileBar.css";
 // import defaultPic from "../assets/profile/undraw_Male_avatar.png";
-import clairePic from "../assets/profile/claire.jpg";
+import clairePic from "../assets/profile/marco.jpg";
 import NotifButton from "./NotifButton";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import ProfileDropdown from "./ProfileDropdown";
@@ -9,6 +9,24 @@ import ProfileDropdown from "./ProfileDropdown";
 function ProfileBar() {
   const [openProfile, setOpenProfile] = useState(false);
   const [openChevron, setOpenChevron] = useState(false);
+  const currentUser = localStorage.getItem("currentUser");
+
+  let menuRef = useRef();
+
+  useEffect(() => {
+    let handler = (e) => {
+      if (!menuRef.current.contains(e.target)) {
+        setOpenProfile(false);
+        setOpenChevron(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
 
   return (
     <div className="main-profile">
@@ -16,24 +34,20 @@ function ProfileBar() {
 
       <div
         className="profil-section"
+        ref={menuRef}
         onClick={() =>
           setOpenProfile(!openProfile) & setOpenChevron(!openChevron)
         }
       >
         <img src={clairePic} className="profile-pic" alt="profile-pict"></img>
 
-        <span className="user-profile-name">Inès</span>
+        <span className="user-profile-name">{currentUser}</span>
 
         <span className="dropdown-icon">
           {openChevron ? <FaChevronUp /> : <FaChevronDown />}
         </span>
 
-        {openProfile && (
-          <ProfileDropdown
-            openProfile={openProfile}
-            handleSetOpenProfile={setOpenProfile}
-          />
-        )}
+        {openProfile && <ProfileDropdown />}
       </div>
     </div>
   );
