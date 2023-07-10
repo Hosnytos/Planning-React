@@ -4,7 +4,7 @@ import colors from "../styles/colors";
 import DataTable from "react-data-table-component";
 import { FaSearch, FaUserCheck, FaUserTimes } from "react-icons/fa";
 import { BiPlus } from "react-icons/bi";
-import { MdModeEdit, MdDelete } from "react-icons/md";
+import { MdModeEdit } from "react-icons/md";
 import AddOperator from "./AddOperator";
 import axios from "axios";
 
@@ -26,6 +26,7 @@ function Operator() {
       name: "Nom",
       selector: (row) => row.name_operateur,
       sortable: true,
+      wrap : true
     },
     {
       name: "CardID",
@@ -46,7 +47,7 @@ function Operator() {
       sortable: true,
     },
     {
-      name: "Secteur",
+      name: "Shift",
       selector: (row) => row.id_shift,
       sortable: true,
     },
@@ -78,12 +79,6 @@ function Operator() {
             }}
           >
             <MdModeEdit />
-          </button>
-          <button
-            className="btn-delete-operator"
-            onClick={() => alert("Voulez vous supprimer ?")}
-          >
-            <MdDelete />
           </button>
         </div>
       ),

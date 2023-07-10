@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/ProfileBar.css";
 // import defaultPic from "../assets/profile/undraw_Male_avatar.png";
-import clairePic from "../assets/profile/marco.jpg";
+import clairePic from "../assets/profile/unisex_profile_picture.png";
 import NotifButton from "./NotifButton";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import ProfileDropdown from "./ProfileDropdown";
