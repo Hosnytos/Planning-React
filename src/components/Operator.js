@@ -7,9 +7,11 @@ import { BiPlus } from "react-icons/bi";
 import { MdModeEdit } from "react-icons/md";
 import AddOperator from "./AddOperator";
 import axios from "axios";
+import EditOperator from "./EditOperator";
 
 function Operator() {
   const [addOperator, setAddOperator] = useState(false);
+  const [editOperator, setEditOperator] = useState(null);
 
   const baseURL = "http://127.0.0.1:8000/setting/operateur";
   const [operators, setOperators] = useState([]);
@@ -26,7 +28,7 @@ function Operator() {
       name: "Nom",
       selector: (row) => row.name_operateur,
       sortable: true,
-      wrap : true
+      wrap: true,
     },
     {
       name: "CardID",
@@ -39,11 +41,7 @@ function Operator() {
     },
     {
       name: "Type",
-      selector: (row) => row.isTemp ? (
-        <p>Temp</p>
-      ) : (
-        <p >Not temp</p>
-      ),
+      selector: (row) => (row.isTemp ? <p>Temp</p> : <p>Not temp</p>),
       sortable: true,
     },
     {
@@ -74,9 +72,7 @@ function Operator() {
         <div>
           <button
             className="btn-edit-operator"
-            onClick={() => {
-              setAddOperator(true);
-            }}
+            onClick={() => handleEditOperator(row)}
           >
             <MdModeEdit />
           </button>
@@ -128,6 +124,10 @@ function Operator() {
     setOperatorSearch(newOperator);
   }
 
+  const handleEditOperator = (operators) => {
+    setEditOperator(operators);
+  };
+
   return (
     <div className="main-operator">
       <div>
@@ -171,6 +171,12 @@ function Operator() {
         </div>
       </div>
       {addOperator && <AddOperator setOpenModal={setAddOperator} />}
+      {editOperator && (
+        <EditOperator
+          setOpenModal={setEditOperator}
+          EditOperator={editOperator}
+        />
+      )}
     </div>
   );
 }
