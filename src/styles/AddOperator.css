@@ -60,3 +60,10 @@
 #cancelBtn {
   background-color: crimson;
 }
+
+.add-operator-div-dropdown {
+  flex-direction: column;
+  display: flex;
+  padding-left: 7vh;
+  padding-right: 7vh;
+}

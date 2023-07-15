@@ -29,7 +29,10 @@ function EditOperator({ setOpenModal, EditOperator }) {
   const [operator, setOperator] = useState(null);
   const [shiftList, setShiftList] = useState([]);
   const [stationList, setStationList] = useState([]);
-  const [selectedStationItem, setSelectedStationItem] = useState("");
+
+  const [selectedStationItem, setSelectedStationItem] = useState(
+    EditOperator.home_station
+  );
 
   const [selectedShiftItem, setSelectedShiftItem] = useState(
     EditOperator.id_shift
@@ -100,22 +103,27 @@ function EditOperator({ setOpenModal, EditOperator }) {
                 name="fullName"
                 label="Nom"
                 value={operator?.name_operateur || ""}
+                style={{ marginTop: "8px", marginBottom: "16px" }}
               />
               <TextField
                 variant="outlined"
                 name="CardID"
                 label="CardID"
                 value={operator?.id_card || ""}
+                style={{ marginTop: "8px", marginBottom: "16px" }}
               />
-              <div>
-                <FormControl variant="outlined">
+              <div className="edit-operator-div-dropdown">
+              <FormControl variant="outlined">
                   <InputLabel>Station</InputLabel>
                   <MuiSelect
                     value={selectedStationItem}
                     onChange={handleStationChange}
                     label="Station"
+                    style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
-                    <MenuItem value={operator?.id_station}>Sélectionner une station</MenuItem>
+                    <MenuItem value={operator?.home_station}>
+                      Sélectionner une station
+                    </MenuItem>
                     {stationList.map((item) => (
                       <MenuItem key={item} value={item}>
                         {item}
@@ -129,8 +137,11 @@ function EditOperator({ setOpenModal, EditOperator }) {
                     value={selectedShiftItem}
                     onChange={handleShiftChange}
                     label="Shift"
+                    style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
-                    <MenuItem value={operator?.id_shift}>Sélectionner un shift</MenuItem>
+                    <MenuItem value={operator?.id_shift}>
+                      Sélectionner un shift
+                    </MenuItem>
                     {shiftList.map((item) => (
                       <MenuItem key={item} value={item}>
                         {item}
@@ -171,11 +182,17 @@ function EditOperator({ setOpenModal, EditOperator }) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              <Controls.RadioGroup name="type" label="Type" items={typeItems} />
+              <Controls.RadioGroup
+                name="type"
+                label="Type"
+                items={typeItems}
+                value={operator?.isTemp ? "temp" : "tit" }
+              />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"
                 items={statusItems}
+                value={operator?.active_status ? "active" : "offline" }
               />
             </Grid>
           </Grid>

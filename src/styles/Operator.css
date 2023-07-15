@@ -116,3 +116,9 @@ input:focus {
     max-width: 575px;
   }
 }
+
+.add-operator-modal {
+  position: fixed;
+  top: 0;
+  left: 17%;
+}
