@@ -1,8 +1,6 @@
-import React, { useContext, useEffect } from "react";
 import "../../styles/PageNotFound.css";
 import erro_img from "../../assets/undraw_404.svg";
 import { Link } from "react-router-dom";
-import AuthContext from "../auth/auth";
 
 function PageNotFound() {
   return (

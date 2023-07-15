@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import LoginPage from "./pages/auth/LoginPage";
 import UserProfile from "./pages/User/UserProfile";
 import PrivateRoutes from "./pages/auth/PrivateRoutes";
+import SaisieForm from "./components/Saisie/SaisieForm";
 
 function App() {
   const isLoggedIn = localStorage.getItem("isLogged");
@@ -28,7 +29,7 @@ function App() {
               <Route path="home" element={<Home />} />
               <Route path="operateur" element={<Operator />} />
               <Route path="competences" element={<Home />} />
-              <Route path="presence" element={<Home />} />
+              <Route path="saisie" element={<SaisieForm />} />
               <Route path="dashboard" element={<Home />} />
               <Route path="support" element={<SupportPage />} />
               <Route path="profile" element={<UserProfile />} />

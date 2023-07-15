@@ -2,9 +2,8 @@ import "../styles/MainContainer.css";
 import logo_se_white from "../assets/logo/logo_se_white_screen.png";
 import { SideBarLinks } from "./SideBarLinks";
 import ProfileBar from "./ProfileBar";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, Link } from "react-router-dom";
-import AuthContext from "../pages/auth/auth";
 
 function Sidebar() {
   //const { setLogged } = useContext(AuthContext);
