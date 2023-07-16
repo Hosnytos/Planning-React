@@ -5,6 +5,7 @@ import { MdSwitchAccount } from "react-icons/md";
 import { GiSoccerKick } from "react-icons/gi";
 import "../styles/ProfileDropdown.css";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function ProfileDropdown() {
   const { setAuth } = useContext(AuthContext);
@@ -31,7 +32,10 @@ function ProfileDropdown() {
     localStorage.setItem("isLogged", false);
     localStorage.setItem("currentUser", "");
     navigate("/login");
-    window.location.reload();
+    toast.success("À très bientôt ! 🚀", {
+      autoClose: 2000,
+    });
+    // window.location.reload();
   };
 
   return (

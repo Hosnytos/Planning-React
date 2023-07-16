@@ -25,7 +25,7 @@ function SupportPage() {
         }
       );
     toast.success("Votre message a été envoyé ! 🚀", {
-      autoClose: 3000,
+      autoClose: 2000,
     });
     e.target.reset();
   };

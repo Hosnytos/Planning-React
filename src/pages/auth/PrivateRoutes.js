@@ -9,7 +9,7 @@ const PrivateRoutes = () => {
   if (isLoggedInData === "false") {
     isLoggedIn = false;
   } else {
-    if (isCurrentUser === "jordy naiya") {
+    if (isCurrentUser === "jordynaiya@gmail.com") {
       console.log("CA MARCHE COMPARAISON OK");
     } else {
       isLoggedIn = false;

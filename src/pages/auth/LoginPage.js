@@ -6,17 +6,23 @@ import login_intro from "../../assets/logo/planning_intro.svg";
 import * as IoIcons from "react-icons/io";
 import * as MdIcons from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { InputAdornment, IconButton, Input } from "@mui/material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
 
   const { auth, setAuth, setLogged } = useContext(AuthContext);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const userRef = useRef();
   //const errRef = useRef();
 
   const [user, setUser] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(true);
   const [pwd, setPwd] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   //const [errMsg, setErrMsg] = useState("");
 
   useEffect(() => {
@@ -27,10 +33,38 @@ export const LoginPage = () => {
   //   setErrMsg("");
   // }, [user, pwd]);
 
+  const handleEmailChange = (event) => {
+    const inputValue = event.target.value;
+    setUser(inputValue);
+
+    // Validation de l'email avec le regex
+    setIsValidEmail(emailRegex.test(inputValue));
+  };
+
+  const handlePasswordChange = (event) => {
+    const inputValue = event.target.value;
+    setPwd(inputValue);
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  // Fonction pour vérifier les informations d'identification
+  const checkCredentials = (user, pwd) => {
+    const validEmail = "jordynaiya@gmail.com";
+    const validPassword = "ney11";
+
+    return user === validEmail && pwd === validPassword;
+  };
+
+
+  const isValid = checkCredentials(user, pwd);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if ((user === "jordy naiya") & (pwd === "ney11")) {
+    if (isValid) {
       setLogged(true);
       setAuth({ user, pwd });
 
@@ -44,8 +78,24 @@ export const LoginPage = () => {
       navigate("/home");
       setUser("");
       setPwd("");
-    } else {
+
+      toast.success("Connexion réussie ! 🚀", {
+        autoClose: 2000,
+      });
+      /* toast.success("Bienvenue " + user + " ! 🚀", {
+        autoClose: 3000,
+      }); */
+    } 
+    else if (!isValidEmail) {
+      toast.warning("Veuillez entrer une adresse email correcte", {
+        autoClose: 2000,
+      });
+    }
+    else {
       console.log("ERROR");
+      toast.error("L'e-mail ou le mot de passe est incorrect !", {
+        autoClose: 2000,
+      });
     }
   };
 
@@ -84,12 +134,12 @@ export const LoginPage = () => {
             <label htmlFor="email" className="label-email">
               Email
             </label>
-            <input
+            <Input
               className="login-input"
               type="text"
               placeholder="Veuillez saisir votre adresse mail"
               ref={userRef}
-              onChange={(e) => setUser(e.target.value)}
+              onChange={handleEmailChange}
               value={user}
               required
             />
@@ -102,23 +152,41 @@ export const LoginPage = () => {
             <label htmlFor="password" className="label-password">
               Mot de passe
             </label>
-            <input
+            <Input
               className="login-input"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Veuillez saisir votre mot de passe"
-              onChange={(e) => setPwd(e.target.value)}
+              onChange={handlePasswordChange}
               value={pwd}
               required
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleTogglePasswordVisibility}
+                    edge="end"
+                    aria-label="toggle password visibility"
+                  >
+                    {showPassword ? (
+                      <IoIcons.IoIosEyeOff />
+                    ) : (
+                      <IoIcons.IoIosEye />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </div>
 
-          <button className="login-button" type="submit">
+          <button
+            className="login-button"
+            type="submit"
+          >
             Connexion
           </button>
         </form>
 
         <footer className="footer-rights">
-          All rights reserved schneider Electric 2023 ©
+          All rights reserved Schneider Electric 2023 ©
         </footer>
       </div>
 
