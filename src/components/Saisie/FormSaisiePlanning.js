@@ -171,7 +171,10 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values }) => {
       </div>
       <div className="add-planning-modal">
         {addPlanningFields && (
-          <AddPlanningFields setOpenModal={setAddPlanningFields} />
+          <AddPlanningFields
+            setOpenModal={setAddPlanningFields}
+            operatorsList={operators}
+          />
         )}
       </div>
     </div>

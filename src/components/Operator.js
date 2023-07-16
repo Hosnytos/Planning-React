@@ -170,13 +170,15 @@ function Operator() {
           ></DataTable>
         </div>
       </div>
-      {addOperator && <AddOperator setOpenModal={setAddOperator} />}
-      {editOperator && (
-        <EditOperator
-          setOpenModal={setEditOperator}
-          EditOperator={editOperator}
-        />
-      )}
+      <div className="add-operator-modal">
+        {addOperator && <AddOperator setOpenModal={setAddOperator} />}
+        {editOperator && (
+          <EditOperator
+            setOpenModal={setEditOperator}
+            EditOperator={editOperator}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -32,10 +32,8 @@ function ProfileDropdown() {
     localStorage.setItem("isLogged", false);
     localStorage.setItem("currentUser", "");
     navigate("/login");
-    toast.success("À très bientôt ! 🚀", {
-      autoClose: 2000,
-    });
-    // window.location.reload();
+
+    window.location.reload();
   };
 
   return (
