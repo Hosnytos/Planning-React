@@ -139,19 +139,16 @@ const customStyles = {
 
 
 function Competence() {
-  const baseURL = "http://127.0.0.1:8000/setting/operateur";
-  const [operators, setOperators] = useState([]);
   const [operatorSearch, setOperatorSearch] = useState([]);
   
 
   React.useEffect(() => {
-    const names = ope_skills.map((operator) => operator.name_operateur);
-    setOperators(names);
+    setOperatorSearch(ope_skills);
   }, []);
 
 
   function handleOperatorSearch(event) {
-    const newOperator = operators.filter((row) => {
+    const newOperator = ope_skills.filter((row) => {
       return row.name_operateur
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
@@ -178,7 +175,7 @@ function Competence() {
           <DataTable
             className="data-table-container"
             columns={column}
-            data={ope_skills}
+            data={operatorSearch}
             responsive={true}
             responsiveSm={true}
             responsiveMd={true}
