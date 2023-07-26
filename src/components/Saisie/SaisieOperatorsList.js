@@ -102,6 +102,25 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
     setOperatorSearch(newOperator);
   }
 
+  function handleSearch(event) {
+
+    if (parseInt(values.shift) === 1 || parseInt(values.shift) === 2) {
+      // Utiliser la fonction de recherche basée sur id_shift
+      const newOperator = operators.filter((row) =>
+        row.id_shift.toString().toLowerCase().includes(parseInt(values.shift))
+      );
+      setOperatorSearch(newOperator);
+    } else {
+      // Utiliser la fonction de recherche basée sur le nom de l'opérateur
+      const newOperator = operators.filter((row) =>
+        row.name_operateur
+          .toLowerCase()
+          .includes(event.target.value.toLowerCase())
+      );
+      setOperatorSearch(newOperator);
+    }
+  }
+
   React.useEffect(() => {
     // Charger les opérateurs sélectionnés à partir du localStorage lors du chargement initial
     const storedOperators = localStorage.getItem("selectedOperators");
@@ -157,7 +176,7 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
   // };
 
   const selectedCriteria = (row) => {
-    return !row.active_status || row.id_shift !== parseInt(values.shift);
+    return !row.active_status;
   };
 
   return (
@@ -169,7 +188,7 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
             <input
               type="text"
               placeholder="Recherche..."
-              onChange={handleOperatorSearch}
+              onChange={handleSearch}
             />
           </div>
         </div>
