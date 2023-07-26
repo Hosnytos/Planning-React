@@ -7,20 +7,7 @@ export class SaisieForm extends Component {
     step: 1,
     operators: [""],
     shift: "",
-    planningFields: {
-      shift: "",
-      personne: "",
-      station: "",
-      jour: "",
-      semaine: "",
-      date: "",
-      tl: "",
-      SST: false,
-      leader5S: false,
-      tut: false,
-    },
-
-    planningList: [{}],
+    tl: "JN",
   };
 
   // Proceed to next step
@@ -60,10 +47,14 @@ export class SaisieForm extends Component {
     });
   };
 
+  handlePlanningList = (newPL) => {
+    this.setState({ planningList: newPL });
+  };
+
   render() {
     const { step } = this.state;
-    const { shift, operators, planningFields, planningList } = this.state;
-    const values = { shift, operators, planningFields, planningList };
+    const { tl, shift, operators, planningFields, planningList } = this.state;
+    const values = { tl, shift, operators, planningFields, planningList };
 
     switch (step) {
       case 1:
@@ -71,7 +62,6 @@ export class SaisieForm extends Component {
           <FormSaiseOperator
             nextStep={this.nextStep}
             handleChange={this.handleChange}
-            handleChangePlanning={this.handleChangePlanning}
             handleChangeOperators={this.handleChangeOperators}
             values={values}
           />
@@ -83,6 +73,7 @@ export class SaisieForm extends Component {
             prevStep={this.prevStep}
             handleChange={this.handleChangePlanning}
             values={values}
+            handlePlanning={this.handlePlanningList}
           />
         );
 

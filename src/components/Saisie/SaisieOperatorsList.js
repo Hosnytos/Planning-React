@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/SaisieOperatorsList.css";
 import colors from "../../styles/colors";
 import DataTable from "react-data-table-component";
 import { FaSearch, FaUserCheck, FaUserTimes } from "react-icons/fa";
 import axios from "axios";
 
-function SaiseOperatorsList({ handleNewOperators }) {
+function SaiseOperatorsList({ handleNewOperators, values }) {
   const baseURL = "http://127.0.0.1:8000/setting/operateur";
   const [operators, setOperators] = useState([]);
   const [operatorSearch, setOperatorSearch] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedOperators, setSelectedOperators] = useState(new Set());
 
-  React.useEffect(() => {
-    axios.get(baseURL).then((response) => {
-      setOperators(response.data);
-      setOperatorSearch(response.data);
-    });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(baseURL);
+        setOperators(response.data);
+        setOperatorSearch(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
+
   const column = [
     {
       name: "Nom",
@@ -94,11 +102,63 @@ function SaiseOperatorsList({ handleNewOperators }) {
     setOperatorSearch(newOperator);
   }
 
+  React.useEffect(() => {
+    // Charger les opérateurs sélectionnés à partir du localStorage lors du chargement initial
+    const storedOperators = localStorage.getItem("selectedOperators");
+    if (storedOperators) {
+      const operatorsArray = JSON.parse(storedOperators);
+      setSelectedOperators(new Set(operatorsArray));
+    }
+  }, []);
+
+  // Gérer les lignes sélectionnées
   function handleSelectedRowsChange(rows) {
-    setSelectedRows(rows.selectedRows);
-    const newOperators = rows.selectedRows.map((row) => row.name_operateur);
-    handleNewOperators(newOperators);
+    // Créer un nouvel ensemble pour stocker les opérateurs sélectionnés uniques
+    const newSelectedOperators = new Set(selectedOperators);
+
+    // Ajouter les opérateurs sélectionnés de la DataTable à l'ensemble
+    rows.selectedRows.map((row) =>
+      newSelectedOperators.add(row.name_operateur)
+    );
+
+    // Créer un nouvel ensemble pour stocker les opérateurs désélectionnés uniques
+    const deselectedOperatorsSet = new Set();
+
+    // Vérifier les opérateurs déjà présents dans l'ensemble selectedOperators mais absents de la DataTable (désélectionnés)
+    selectedOperators.forEach((operator) => {
+      if (!rows.selectedRows.find((row) => row.name_operateur === operator)) {
+        deselectedOperatorsSet.add(operator);
+      }
+    });
+
+    // Supprimer les opérateurs désélectionnés de l'ensemble des opérateurs sélectionnés
+    deselectedOperatorsSet.forEach((operator) =>
+      newSelectedOperators.delete(operator)
+    );
+
+    // Mettre à jour l'état des opérateurs sélectionnés
+    setSelectedOperators(newSelectedOperators);
+
+    // Convertir l'ensemble en tableau
+    const newOperatorsArray = Array.from(newSelectedOperators);
+
+    // Mettre à jour les opérateurs dans le localStorage
+    localStorage.setItem(
+      "selectedOperators",
+      JSON.stringify(newOperatorsArray)
+    );
+
+    // Mettre à jour les nouveaux opérateurs dans le composant parent
+    handleNewOperators(newOperatorsArray);
   }
+
+  // const selctCriteria = (row) => {
+  //   return selectedOperators.has(row.name_operateur);
+  // };
+
+  const selectedCriteria = (row) => {
+    return !row.active_status || row.id_shift !== parseInt(values.shift);
+  };
 
   return (
     <div className="main-operator-saisie">
@@ -121,6 +181,7 @@ function SaiseOperatorsList({ handleNewOperators }) {
             data={operatorSearch}
             selectableRows={true}
             onSelectedRowsChange={handleSelectedRowsChange}
+            selectableRowDisabled={selectedCriteria}
             responsive={true}
             responsiveSm={true}
             responsiveMd={true}

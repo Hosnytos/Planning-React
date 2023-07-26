@@ -4,6 +4,9 @@ import SaiseOperatorsList from "./SaisieOperatorsList";
 import "../../styles/FormSaiseOperator.css";
 
 export class FormSaiseOperator extends Component {
+  greenRadioStyle = {
+    color: "green",
+  };
   continue = (e) => {
     e.preventDefault();
     this.props.nextStep();
@@ -11,7 +14,7 @@ export class FormSaiseOperator extends Component {
 
   handleNewOperators = (newOperators) => {
     // Faites ce que vous voulez avec newOperators dans le composant parent
-    console.log(newOperators);
+    //console.log(newOperators);
     this.props.handleChangeOperators(newOperators);
   };
 
@@ -20,7 +23,10 @@ export class FormSaiseOperator extends Component {
     return (
       <div className="saisie-op-main">
         <div className="saisie-list-op-shift">
-          <SaiseOperatorsList handleNewOperators={this.handleNewOperators} />
+          <SaiseOperatorsList
+            handleNewOperators={this.handleNewOperators}
+            values={values}
+          />
 
           <div className="saisie-shift-and-continue">
             <p className="text-explication-saisieOne">
@@ -37,8 +43,16 @@ export class FormSaiseOperator extends Component {
               className="shift-selection-radio"
               row={true}
             >
-              <FormControlLabel value="1" control={<Radio />} label="Mat" />
-              <FormControlLabel value="2" control={<Radio />} label="AM" />
+              <FormControlLabel
+                value="1"
+                control={<Radio style={this.greenRadioStyle} />}
+                label="Mat"
+              />
+              <FormControlLabel
+                value="2"
+                control={<Radio style={this.greenRadioStyle} />}
+                label="AM"
+              />
             </RadioGroup>
 
             <Button color="primary" variant="contained" onClick={this.continue}>
