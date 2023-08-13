@@ -15,17 +15,22 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import axios from "axios";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const typeItems = [
-  { id: "tit", title: "Tit" },
-  { id: "temp", title: "Temp" },
+  { id: "false", title: "Tit" },
+  { id: "true", title: "Temp" },
 ];
 const statusItems = [
-  { id: "active", title: "Actif" },
-  { id: "offline", title: "Hors-ligne" },
+  { id: "true", title: "Actif" },
+  { id: "false", title: "Hors-ligne" },
 ];
 
 function AddOperator({ setOpenModal }) {
+  const navigate = useNavigate();
   const [selectedStationItem, setSelectedStationItem] = useState("");
   const handleStationChange = (event) => {
     setSelectedStationItem(event.target.value);
@@ -35,12 +40,13 @@ function AddOperator({ setOpenModal }) {
 
   const [selectedDateEntree, setSelectedDateEntree] = useState(null);
   const handleDateEntreeChange = (date) => {
-    setSelectedDateEntree(date);
+    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
+    setSelectedDateEntree(formattedDate);
   };
-
   const [selectedDateFin, setSelectedDateFin] = useState(null);
   const handleDateFinChange = (date) => {
-    setSelectedDateFin(date);
+    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
+    setSelectedDateFin(formattedDate);
   };
   const handleShiftChange = (event) => {
     setSelectedShiftItem(event.target.value);
@@ -63,6 +69,40 @@ function AddOperator({ setOpenModal }) {
     });
   }, []);
 
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const formData = {
+      id_card: event.target.CardID.value,
+      name_operateur: event.target.fullName.value,
+      id_shift: selectedShiftItem,
+      home_station: selectedStationItem,
+      start_date: selectedDateEntree,
+      end_date: selectedDateFin,
+      isTemp: event.target.type.value,
+      active_status: event.target.status.value,
+    };
+
+    axios
+      .post("http://127.0.0.1:8000/setting/operateur", formData)
+      .then((response) => {
+        // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
+        console.log("Réponse du serveur :", response.data);
+        navigate("/operateur");
+        toast.success("Opérateur ajouté ! 🚀", {
+          autoClose: 1000,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      })
+      .catch((error) => {
+        // En cas d'erreur, affichez un message d'erreur ou gérez l'erreur de votre choix
+        console.error("Erreur lors de la requête POST :", error);
+        toast.error("Erreur lors de l'ajout !", {
+          autoClose: 2000,
+        });
+      });
+  };
 
   return (
     <div className="modalBackground">
@@ -79,11 +119,21 @@ function AddOperator({ setOpenModal }) {
         </div>
         <hr className="add-operator-search-hr" />
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <Grid container className="operator-grid-container">
             <Grid item xs={6}>
-              <TextField style={{marginTop : "8px", marginBottom : "16px"}} variant="outlined" name="fullName" label="Nom" />
-              <TextField style={{marginTop : "8px", marginBottom : "16px"}} variant="outlined" name="CardID" label="CardID" />
+              <TextField
+                style={{ marginTop: "8px", marginBottom: "16px" }}
+                variant="outlined"
+                name="fullName"
+                label="Nom"
+              />
+              <TextField
+                style={{ marginTop: "8px", marginBottom: "16px" }}
+                variant="outlined"
+                name="CardID"
+                label="CardID"
+              />
               <div className="add-operator-div-dropdown">
                 <FormControl variant="outlined">
                   <InputLabel>Station</InputLabel>
@@ -91,7 +141,7 @@ function AddOperator({ setOpenModal }) {
                     value={selectedStationItem}
                     onChange={handleStationChange}
                     label="Station"
-                    style={{marginTop : "8px", marginBottom : "16px"}}
+                    style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
                     {stationList.map((item) => (
@@ -107,7 +157,7 @@ function AddOperator({ setOpenModal }) {
                     value={selectedShiftItem}
                     onChange={handleShiftChange}
                     label="Shift"
-                    style={{marginTop : "8px", marginBottom : "16px"}}
+                    style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
                     {shiftList.map((item) => (
@@ -150,11 +200,7 @@ function AddOperator({ setOpenModal }) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              <Controls.RadioGroup
-                name="type"
-                label="Type"
-                items={typeItems}
-              />
+              <Controls.RadioGroup name="type" label="Type" items={typeItems} />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"
@@ -162,19 +208,18 @@ function AddOperator({ setOpenModal }) {
               />
             </Grid>
           </Grid>
+          <div className="footer">
+            <button
+              onClick={() => {
+                setOpenModal(false);
+              }}
+              id="cancelBtn"
+            >
+              Annuler
+            </button>
+            <button type="submit">Valider</button>
+          </div>
         </form>
-
-        <div className="footer">
-          <button
-            onClick={() => {
-              setOpenModal(false);
-            }}
-            id="cancelBtn"
-          >
-            Annuler
-          </button>
-          <button>Valider</button>
-        </div>
       </div>
     </div>
   );

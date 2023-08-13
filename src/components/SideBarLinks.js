@@ -25,6 +25,18 @@ export const SideBarLinks = [
         cName : 'sidebar-link-text'
     },
     {
+        title : 'Secteur',
+        path : '/secteur',
+        icon : <FaIcons.FaIndustry />,
+        cName : 'sidebar-link-text'
+    },
+    {
+        title : 'Station',
+        path : '/station',
+        icon : <FaIcons.FaDesktop  />,
+        cName : 'sidebar-link-text'
+    },
+    {
         title : 'Saisie',
         path : '/saisie',
         icon : <BsIcons.BsCalendarWeekFill/>,

@@ -11,6 +11,8 @@ import UserProfile from "./pages/User/UserProfile";
 import PrivateRoutes from "./pages/auth/PrivateRoutes";
 import SaisieForm from "./components/Saisie/SaisieForm";
 import Competence from "./components/Competence";
+import Secteur from "./components/Secteur";
+import Station from "./components/Station";
 
 function App() {
   const isLoggedIn = localStorage.getItem("isLogged");
@@ -30,6 +32,8 @@ function App() {
               <Route path="home" element={<Home />} />
               <Route path="operateur" element={<Operator />} />
               <Route path="competences" element={<Competence />} />
+              <Route path="secteur" element={<Secteur />} />
+              <Route path="station" element={<Station />} />
               <Route path="saisie" element={<SaisieForm />} />
               <Route path="dashboard" element={<Home />} />
               <Route path="support" element={<SupportPage />} />

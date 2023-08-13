@@ -15,21 +15,37 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import axios from "axios";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const typeItems = [
-  { id: "tit", title: "Tit" },
-  { id: "temp", title: "Temp" },
+  { id: "false", title: "Tit" },
+  { id: "true", title: "Temp" },
 ];
 const statusItems = [
-  { id: "active", title: "Actif" },
-  { id: "offline", title: "Hors-ligne" },
+  { id: "true", title: "Actif" },
+  { id: "false", title: "Hors-ligne" },
 ];
 
 function EditOperator({ setOpenModal, EditOperator }) {
+  const navigate = useNavigate();
+  const id_operateur = EditOperator.id_operateur;
   const [operator, setOperator] = useState(null);
   const [shiftList, setShiftList] = useState([]);
   const [stationList, setStationList] = useState([]);
 
+  const [selectedFullName, setSelectedFullName] = useState(
+    EditOperator.name_operateur
+  );
+  const handleNameChange = (event) => {
+    setSelectedFullName(event.target.value);
+  };
+  const [selectedCardId, setSelectedCardId] = useState(EditOperator.id_card);
+  const handleCardIdChange = (event) => {
+    setSelectedCardId(event.target.value);
+  };
   const [selectedStationItem, setSelectedStationItem] = useState(
     EditOperator.home_station
   );
@@ -42,12 +58,14 @@ function EditOperator({ setOpenModal, EditOperator }) {
     EditOperator.start_date
   );
   const handleDateEntreeChange = (date) => {
-    setSelectedDateEntree(date);
+    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
+    setSelectedDateEntree(formattedDate);
   };
 
   const [selectedDateFin, setSelectedDateFin] = useState(EditOperator.end_date);
   const handleDateFinChange = (date) => {
-    setSelectedDateFin(date);
+    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
+    setSelectedDateFin(formattedDate);
   };
   const handleShiftChange = (event) => {
     setSelectedShiftItem(event.target.value);
@@ -55,16 +73,26 @@ function EditOperator({ setOpenModal, EditOperator }) {
   const handleStationChange = (event) => {
     setSelectedStationItem(event.target.value);
   };
+  const [selectedType, setSelectedType] = useState(
+    EditOperator.isTemp.toString()
+  );
+  const handleTypeChange = (event) => {
+    setSelectedType(event.target.value);
+  };
+  const [selectedStatus, setSelectedStatus] = useState(
+    EditOperator.active_status.toString()
+  );
+  const handleStatusChange = (event) => {
+    setSelectedStatus(event.target.value);
+  };
 
   React.useEffect(() => {
     axios
-      .get(
-        `http://127.0.0.1:8000/setting/operateur/${EditOperator.id_operateur}`
-      )
+      .get(`http://127.0.0.1:8000/setting/operateur/${id_operateur}`)
       .then((response) => {
         setOperator(response.data);
       });
-  }, [EditOperator.id_operateur]);
+  }, [id_operateur]);
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/shift`).then((response) => {
@@ -79,6 +107,42 @@ function EditOperator({ setOpenModal, EditOperator }) {
       setStationList(stationIds);
     });
   }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const formData = {
+      id_operateur: id_operateur,
+      id_card: event.target.CardID.value,
+      name_operateur: event.target.fullName.value,
+      id_shift: selectedShiftItem,
+      home_station: selectedStationItem,
+      start_date: selectedDateEntree,
+      end_date: selectedDateFin,
+      isTemp: event.target.type.value,
+      active_status: event.target.status.value,
+    };
+
+    axios
+      .put(`http://127.0.0.1:8000/setting/operateur/${id_operateur}`, formData)
+      .then((response) => {
+        // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
+        console.log("Réponse du serveur :", response.data);
+        navigate("/operateur");
+        toast.success("Opérateur modifié ! 🚀", {
+          autoClose: 1000,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      })
+      .catch((error) => {
+        // En cas d'erreur, affichez un message d'erreur ou gérez l'erreur de votre choix
+        console.error("Erreur lors de la requête POST :", error);
+        toast.error("Erreur lors de la modification !", {
+          autoClose: 2000,
+        });
+      });
+  };
 
   return (
     <div className="modalBackground">
@@ -95,25 +159,27 @@ function EditOperator({ setOpenModal, EditOperator }) {
         </div>
         <hr className="edit-operator-search-hr" />
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <Grid container className="operator-grid-container">
             <Grid item xs={6}>
               <TextField
                 variant="outlined"
                 name="fullName"
                 label="Nom"
-                value={operator?.name_operateur || ""}
+                value={selectedFullName || ""}
                 style={{ marginTop: "8px", marginBottom: "16px" }}
+                onChange={handleNameChange}
               />
               <TextField
                 variant="outlined"
                 name="CardID"
                 label="CardID"
-                value={operator?.id_card || ""}
+                value={selectedCardId || ""}
                 style={{ marginTop: "8px", marginBottom: "16px" }}
+                onChange={handleCardIdChange}
               />
               <div className="edit-operator-div-dropdown">
-              <FormControl variant="outlined">
+                <FormControl variant="outlined">
                   <InputLabel>Station</InputLabel>
                   <MuiSelect
                     value={selectedStationItem}
@@ -186,29 +252,30 @@ function EditOperator({ setOpenModal, EditOperator }) {
                 name="type"
                 label="Type"
                 items={typeItems}
-                value={operator?.isTemp ? "temp" : "tit" }
+                value={selectedType}
+                onChange={handleTypeChange}
               />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"
                 items={statusItems}
-                value={operator?.active_status ? "active" : "offline" }
+                value={selectedStatus}
+                onChange={handleStatusChange}
               />
             </Grid>
           </Grid>
+          <div className="footer">
+            <button
+              onClick={() => {
+                setOpenModal(false);
+              }}
+              id="cancelBtn"
+            >
+              Annuler
+            </button>
+            <button type="submit">Valider</button>
+          </div>
         </form>
-
-        <div className="footer">
-          <button
-            onClick={() => {
-              setOpenModal(false);
-            }}
-            id="cancelBtn"
-          >
-            Annuler
-          </button>
-          <button>Valider</button>
-        </div>
       </div>
     </div>
   );
