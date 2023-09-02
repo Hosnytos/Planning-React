@@ -12,6 +12,7 @@ const ope_skills = [
     SIM_Leader: 3,
     Leader_5S: 0,
     SST: 4,
+    last_assesement: "2023-08-17",
   },
   {
     name_operateur: "Bob Johnson",
@@ -19,6 +20,7 @@ const ope_skills = [
     SIM_Leader: 1,
     Leader_5S: 2,
     SST: 3,
+    last_assesement: "2023-03-22",
   },
   {
     name_operateur: "Charlie Brown",
@@ -26,6 +28,7 @@ const ope_skills = [
     SIM_Leader: 0,
     Leader_5S: 4,
     SST: 1,
+    last_assesement: "2022-12-07",
   },
   {
     name_operateur: "David Lee",
@@ -33,6 +36,7 @@ const ope_skills = [
     SIM_Leader: 2,
     Leader_5S: 3,
     SST: 0,
+    last_assesement: "2022-11-10",
   },
   {
     name_operateur: "Emma Taylor",
@@ -40,6 +44,7 @@ const ope_skills = [
     SIM_Leader: 3,
     Leader_5S: 1,
     SST: 4,
+    last_assesement: "2022-07-09",
   },
   {
     name_operateur: "Frank Martin",
@@ -47,6 +52,7 @@ const ope_skills = [
     SIM_Leader: 4,
     Leader_5S: 2,
     SST: 1,
+    last_assesement: "2021-06-01",
   },
   {
     name_operateur: "Grace Wilson",
@@ -54,6 +60,7 @@ const ope_skills = [
     SIM_Leader: 1,
     Leader_5S: 3,
     SST: 4,
+    last_assesement: "2020-02-27",
   },
   {
     name_operateur: "Henry Anderson",
@@ -61,6 +68,7 @@ const ope_skills = [
     SIM_Leader: 0,
     Leader_5S: 4,
     SST: 2,
+    last_assesement: "2023-08-13",
   },
   {
     name_operateur: "Isabella Martinez",
@@ -68,6 +76,7 @@ const ope_skills = [
     SIM_Leader: 2,
     Leader_5S: 1,
     SST: 3,
+    last_assesement: "2023-06-11",
   },
   {
     name_operateur: "Jack Robinson",
@@ -75,6 +84,7 @@ const ope_skills = [
     SIM_Leader: 3,
     Leader_5S: 0,
     SST: 2,
+    last_assesement: "2022-05-07",
   },
 ];
 
@@ -100,6 +110,10 @@ const column = [
   {
     name: "SST",
     selector: (row) => row.SST,
+  },
+  {
+    name: "Date Eval",
+    selector: (row) => row.last_assesement,
   },
 ];
 

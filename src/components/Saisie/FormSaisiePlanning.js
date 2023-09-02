@@ -4,6 +4,7 @@ import DataTable from "react-data-table-component";
 import colors from "../../styles/colors";
 //import axios from "axios";
 import { BiPlus } from "react-icons/bi";
+import { RxCross2 } from "react-icons/rx";
 import AddPlanningFields from "./AddPlanningFields";
 import "../../styles/FormSaisiePlanning.css";
 
@@ -83,6 +84,19 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       selector: (row) => row.personne,
       sortable: true,
       wrap: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div>
+          <button
+            className="btn-delete-operator"
+            onClick={() => handleDeleteEntry(row)}
+          >
+            <RxCross2 />
+          </button>
+        </div>
+      ),
     },
   ];
 
@@ -200,6 +214,23 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       JSON.parse(localStorage.getItem("planningList")) || [];
     const updatedPlanningList = [...storedPlanningList, ...newPL];
     localStorage.setItem("planningList", JSON.stringify(updatedPlanningList));
+  };
+
+  const handleDeleteEntry = (entryToDelete) => {
+    const confirmed = window.confirm("Voulez-vous vraiment supprimer cette entrée ?");
+  
+    if (confirmed) {
+      // Supprimez l'entrée du tableau
+      const updatedPlanningList = planningList.filter(
+        (entry) => entry !== entryToDelete
+      );
+  
+      // Mettez à jour le state avec le nouveau tableau
+      setPlanningList(updatedPlanningList);
+  
+      // Mettez à jour le localStorage
+      localStorage.setItem("planningList", JSON.stringify(updatedPlanningList));
+    }
   };
 
   return (
