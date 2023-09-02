@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import colors from "../../styles/colors";
-import axios from "axios";
+//import axios from "axios";
 import { BiPlus } from "react-icons/bi";
 import AddPlanningFields from "./AddPlanningFields";
 import "../../styles/FormSaisiePlanning.css";
@@ -38,7 +38,7 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       wrap: true,
     },
     {
-      name: "Tuteur",
+      name: "Niv",
       selector: (row) => row.tut,
       sortable: true,
       wrap: true,
@@ -124,11 +124,73 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
     prevStep();
   };
 
-  const handleValidate = (e) => {
+  /*const handleValidate = (e) => {
     e.preventDefault();
     // On vide le tableau
     setPlanningList([]);
     localStorage.removeItem("planningList");
+  };*/
+
+  const handleValidate = (e) => {
+    e.preventDefault();
+
+    // Créez un objet pour stocker les jours et vérifiez s'il y a au moins une entrée SST = 1 pour chaque jour
+    const daysWithSST = {};
+    const invalidDays = [];
+    const missingTut3 = [];
+
+    planningList.forEach((entry) => {
+      const { date, SST, station, tut } = entry;
+
+      // Vérifiez si le jour existe dans l'objet, sinon initialisez-le avec false
+      if (!daysWithSST[date]) {
+        daysWithSST[date] = false;
+      }
+
+      // Si SST = 1, définissez le jour correspondant sur true
+      if (SST === 1) {
+        daysWithSST[date] = true;
+      }
+
+      // Vérifiez si tut = 1, s'il y a un tut = 3 pour la même date et la même station
+      if (tut === 1) {
+        const hasTut3 = planningList.some(
+          (item) =>
+            item.date === date && item.station === station && item.tut === 3
+        );
+        if (!hasTut3) {
+          missingTut3.push({ date, station });
+        }
+      }
+    });
+
+    // Vérifiez s'il y a au moins une entrée avec SST = 1 pour chaque jour
+    Object.keys(daysWithSST).forEach((date) => {
+      if (!daysWithSST[date]) {
+        invalidDays.push(date);
+      }
+    });
+
+    if (invalidDays.length === 0) {
+      if (missingTut3.length === 0) {
+        // Tous les jours ont au moins une entrée SST = 1, et la vérification Tut1 et Tut3 est également réussie.
+        // Vous pouvez procéder à la suppression du tableau ou effectuer d'autres actions nécessaires ici
+        setPlanningList([]);
+        localStorage.removeItem("planningList");
+      } else {
+        // Affichez un message d'erreur pour les dates et les stations manquantes de Tut3
+        const errorMessage = `Il doit y avoir un Tut 3 pour les dates et les stations suivantes : ${missingTut3
+          .map((item) => `\nDate : ${item.date} | Station : ${item.station}`)
+          .join(", ")}`;
+        alert(errorMessage);
+      }
+    } else {
+      // Affichez un message d'erreur avec les jours concernés pour SST = 1
+      const errorMessage = `Il doit y avoir au moins un SST pour chaque jour. Non présent le ${invalidDays.join(
+        ", "
+      )}`;
+      alert(errorMessage);
+    }
   };
 
   const handlePlanningList = (newPL) => {
@@ -176,7 +238,7 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
 
         <div className="btn-pl-main">
           <Button color="secondary" variant="contained" onClick={handleBack}>
-            Back
+            Retour
           </Button>
 
           <Button color="primary" variant="contained" onClick={handleValidate}>

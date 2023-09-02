@@ -57,6 +57,12 @@ function AddPlanningFields({
   const handleSemaineChange = (event) => {
     setSelectedSemaineItem(event.target.value);
   };
+  const rdnNumb = () => {
+    var randomNum = Math.random();
+
+    // Arrondit le nombre à 0 ou 1
+    return Math.round(randomNum);
+  };
 
   //Getsion Selection jours checkbox
   const handleCheckboxChange = (jour) => (event) => {
@@ -84,14 +90,46 @@ function AddPlanningFields({
       jour: jour,
       date: format(addDays(weekStartDate, jours.indexOf(jour)), "dd-MM-yyyy"),
       semaine: `${currentYear}-${currentWeek}`,
-      SST: 0,
+      SST: rdnNumb(),
       leader5S: 0,
       tut: 0,
     }));
 
-    // Appeler la fonction de mise à jour du composant parent avec le nouveau tableau
-    console.log(newPlanningList);
+    // on récupère la liste du planning en mémoire
+    const storedPlanningList =
+      JSON.parse(localStorage.getItem("planningList")) || [];
+
+    // Vérifier si une entrée similaire existe déjà
+    const duplicateEntry = newPlanningList.some((newEntry) => {
+      return storedPlanningList.some((storedEntry) => {
+        return (
+          newEntry.personne === storedEntry.personne &&
+          newEntry.jour === storedEntry.jour &&
+          newEntry.date === storedEntry.date
+        );
+      });
+    });
+
+    if (duplicateEntry) {
+      const duplicateEntryInfo = newPlanningList.find((newEntry) => {
+        return storedPlanningList.some((storedEntry) => {
+          return (
+            newEntry.personne === storedEntry.personne &&
+            newEntry.jour === storedEntry.jour &&
+            newEntry.date === storedEntry.date
+          );
+        });
+      });
+
+      alert(
+        `L'opérateur ${duplicateEntryInfo.personne} est déjà dans un poste le ${duplicateEntryInfo.jour} [${duplicateEntryInfo.date}]. Doublon non autorisé.`
+      );
+      return false; // Arrêter l'exécution si une entrée similaire est trouvée
+    }
+
+    // Si aucune entrée similaire n'est trouvée, ajouter les nouvelles valeurs dans newPlanningList
     handlePlanningList(newPlanningList);
+    return true;
 
     // Vous pouvez faire ce que vous voulez avec le tableau `newPlanningList`
   };
@@ -110,7 +148,7 @@ function AddPlanningFields({
         tl: values.tl,
         station: st,
         jour: jour,
-        date: format(nextWeekDate, "dd-MM-yyyy"),
+        date: format(nextWeekDate, "yyyy-MM-dd"),
         semaine: `${nextWeekYear}-${nextWeek}`,
         SST: 0,
         leader5S: 0,
@@ -118,11 +156,42 @@ function AddPlanningFields({
       };
     });
 
-    // Appeler la fonction de mise à jour du composant parent avec le nouveau tableau
-    console.log(newPlanningList);
-    handlePlanningList(newPlanningList);
+    // on récupère la liste du planning en mémoire
+    const storedPlanningList =
+      JSON.parse(localStorage.getItem("planningList")) || [];
 
-    // Vous pouvez faire ce que vous voulez avec le tableau `newPlanningList`
+    // Vérifier si une entrée similaire existe déjà
+    const duplicateEntry = newPlanningList.some((newEntry) => {
+      return storedPlanningList.some((storedEntry) => {
+        return (
+          newEntry.personne === storedEntry.personne &&
+          newEntry.jour === storedEntry.jour &&
+          newEntry.date === storedEntry.date
+        );
+      });
+    });
+
+    if (duplicateEntry) {
+      const duplicateEntryInfo = newPlanningList.find((newEntry) => {
+        return storedPlanningList.some((storedEntry) => {
+          return (
+            newEntry.personne === storedEntry.personne &&
+            newEntry.jour === storedEntry.jour &&
+            newEntry.date === storedEntry.date
+          );
+        });
+      });
+
+      alert(
+        `L'opérateur ${duplicateEntryInfo.personne} est déjà dans un poste le ${duplicateEntryInfo.jour} [${duplicateEntryInfo.date}]. Doublon non autorisé.`
+      );
+
+      return false; // Arrêter l'exécution si une entrée similaire est trouvée
+    }
+
+    // Si aucune entrée similaire n'est trouvée, ajouter les nouvelles valeurs dans newPlanningList
+    handlePlanningList(newPlanningList);
+    return true;
   };
 
   return (
@@ -146,12 +215,13 @@ function AddPlanningFields({
               <div className="add-operator-div-dropdown">
                 {/* FORMULAIRE CHOIX DE L'OPERATEUR */}
                 <FormControl variant="outlined">
-                  <InputLabel>Opérateur</InputLabel>
+                  <InputLabel>Opérateur*</InputLabel>
                   <MuiSelect
                     value={selectedOperateur}
                     onChange={handleOperateurChange}
                     label="Station"
                     style={{ marginTop: "8px", marginBottom: "16px" }}
+                    required
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
                     {operatorsList.map((item) => (
@@ -164,12 +234,13 @@ function AddPlanningFields({
 
                 {/* FORMULAIRE CHOIX STATION */}
                 <FormControl variant="outlined">
-                  <InputLabel>Station</InputLabel>
+                  <InputLabel>Station*</InputLabel>
                   <MuiSelect
                     value={selectedStationItem}
                     onChange={handleStationChange}
                     label="Station"
                     style={{ marginTop: "8px", marginBottom: "16px" }}
+                    required
                   >
                     <MenuItem value="">Sélectionner la station</MenuItem>
                     {stationList.map((item) => (
@@ -182,12 +253,13 @@ function AddPlanningFields({
 
                 {/* FORMULAIRE CHOIX SEMAINE */}
                 <FormControl variant="outlined">
-                  <InputLabel>Semaine</InputLabel>
+                  <InputLabel>Semaine*</InputLabel>
                   <MuiSelect
                     value={selectedSemaineItem}
                     onChange={handleSemaineChange}
                     label="Station"
                     style={{ marginTop: "8px", marginBottom: "16px" }}
+                    required
                   >
                     <MenuItem value="">
                       Sélectionner la semaine du planning
@@ -231,22 +303,34 @@ function AddPlanningFields({
             Annuler
           </button>
           <button
-            onClick={() => {
-              if (selectedSemaineItem === "Semaine Actuelle") {
-                handleValidation(
-                  selectedOperateur,
-                  selectedStationItem,
-                  selectedJours
-                );
-              } else if (selectedSemaineItem === "Semaine Pro") {
-                handleValidationNextWeek(
-                  selectedOperateur,
-                  selectedStationItem,
-                  selectedJours
-                );
+            onClick={async () => {
+              let success = false;
+
+              if (
+                !selectedOperateur ||
+                !selectedStationItem ||
+                !selectedSemaineItem
+              ) {
+                alert("Veuillez remplir tous les champs obligatoires.");
+              } else {
+                if (selectedSemaineItem === "Semaine Actuelle") {
+                  success = handleValidation(
+                    selectedOperateur,
+                    selectedStationItem,
+                    selectedJours
+                  );
+                } else if (selectedSemaineItem === "Semaine Pro") {
+                  success = handleValidationNextWeek(
+                    selectedOperateur,
+                    selectedStationItem,
+                    selectedJours
+                  );
+                }
               }
 
-              setOpenModal(false);
+              if (success) {
+                setOpenModal(false); // Fermer la modal si le traitement a réussi
+              }
             }}
           >
             Valider
