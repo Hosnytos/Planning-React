@@ -2,17 +2,17 @@ import "./styles/App.css";
 import MainContainer from "./components/MainContainer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
-import Operator from "./components/Operator";
-import SupportPage from "./components/SupportPage";
+import Operator from "./components/Operateur/Operator";
+import SupportPage from "./components/Support/SupportPage";
 import PageNotFound from "./pages/error/PageNotFound";
 import { ToastContainer } from "react-toastify";
 import LoginPage from "./pages/auth/LoginPage";
 import UserProfile from "./pages/User/UserProfile";
 import PrivateRoutes from "./pages/auth/PrivateRoutes";
 import SaisieForm from "./components/Saisie/SaisieForm";
-import Competence from "./components/Competence";
-import Secteur from "./components/Secteur";
-import Station from "./components/Station";
+import Competence from "./components/Competence/Competence";
+import Secteur from "./components/Secteur/Secteur";
+import Station from "./components/Station/Station";
 
 function App() {
   const isLoggedIn = localStorage.getItem("isLogged");
