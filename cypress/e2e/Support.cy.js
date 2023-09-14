@@ -2,28 +2,22 @@ describe("Support form submission test", () => {
   // Connection to Support Page
   beforeEach(() => {
     // On lance l'URL de la page Support
-    cy.visit("http://localhost:3000/support");
+    cy.visit("http://localhost:3000/login");
 
     // On vérifie si nous avons accès aux pages privées (il faut être authentifié)
-    if (
-      cy
-        .get("p")
-        .contains(
-          "Pour vous connecter à votre compte en tant que Team Leader, veuillez fournir votre adresse e-mail et votre mot de passe associé."
-        )
-        .as("connexionIntroText")
-    ) {
-      cy.get(".email-section > .MuiInputBase-root > .MuiInputBase-input").type(
-        "jordynaiya@gmail.com"
-      );
-      cy.get(
-        ".password-section > .MuiInputBase-root > .MuiInputBase-input"
-      ).type("ney11");
-      cy.get(".login-button").click();
-      cy.visit("http://localhost:3000/support");
-    } else {
-      cy.visit("http://localhost:3000/support");
-    }
+
+    cy.get("p").contains(
+      "Pour vous connecter à votre compte en tant que Team Leader, veuillez fournir votre adresse e-mail et votre mot de passe associé."
+    );
+
+    cy.get(".email-section > .MuiInputBase-root > .MuiInputBase-input").type(
+      "jordynaiya@gmail.com"
+    );
+    cy.get(".password-section > .MuiInputBase-root > .MuiInputBase-input").type(
+      "ney11"
+    );
+    cy.get(".login-button").click();
+    cy.visit("http://localhost:3000/support");
   });
 
   it("Should submit and retrieve an error message name not correct", () => {

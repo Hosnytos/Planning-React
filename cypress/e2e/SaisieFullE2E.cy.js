@@ -2,7 +2,7 @@ describe("On simule une entièrement saisie manuelle de planning ", () => {
   // Connection to Postes Saisie
   beforeEach(() => {
     // On lance l'URL de la page saisie
-    cy.visit("http://localhost:3000/saisie");
+    cy.visit("http://localhost:3000/login");
 
     cy.get("p").contains(
       "Pour vous connecter à votre compte en tant que Team Leader, veuillez fournir votre adresse e-mail et votre mot de passe associé."

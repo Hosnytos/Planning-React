@@ -2,7 +2,7 @@ describe("Test Postes : Station & Secteurs", () => {
   // Connection to Postes Page
   beforeEach(() => {
     // On lance l'URL de la page Poste
-    cy.visit("http://localhost:3000/secteur");
+    cy.visit("http://localhost:3000/login");
 
     cy.get("p").contains(
       "Pour vous connecter à votre compte en tant que Team Leader, veuillez fournir votre adresse e-mail et votre mot de passe associé."

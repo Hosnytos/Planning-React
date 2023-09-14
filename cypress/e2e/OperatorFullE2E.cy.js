@@ -112,7 +112,7 @@ describe("On simule l'utlisation de l'appli par un TL", () => {
     //Station
     cy.get(":nth-child(1) > .MuiInputBase-root > .MuiSelect-root").click();
     cy.get('ul[role="listbox"]')
-      .contains("15") // Recherche le texte "15" dans la liste
+      .contains("Leader 5S") // Recherche le texte "15" dans la liste
       .click();
 
     //Shift
