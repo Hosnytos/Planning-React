@@ -14,7 +14,9 @@ function Operator() {
   const [editOperator, setEditOperator] = useState(null);
 
   const baseURL = "http://127.0.0.1:8000/setting/operateur";
+  const stationURL = "http://127.0.0.1:8000/setting/station";
   const [operators, setOperators] = useState([]);
+  const [stations, setStations] = useState([]);
   const [operatorSearch, setOperatorSearch] = useState([]);
 
   React.useEffect(() => {
@@ -23,6 +25,30 @@ function Operator() {
       setOperatorSearch(response.data);
     });
   }, []);
+
+  React.useEffect(() => {
+    axios.get(stationURL).then((response) => {
+      setStations(response.data);
+    });
+  }, []);
+
+  // Créez un objet pour stocker les correspondances entre les stations et les opérateurs
+  const operatorStationMap = {};
+
+  // Parcourez le tableau des stations et créez une correspondance avec les opérateurs
+  stations.forEach((station) => {
+    operatorStationMap[station.id_station] = station.name_station;
+  });
+
+  // Maintenant, ajoutez le nom de la station correspondante à chaque opérateur
+  for (const key in operators) {
+    if (operators.hasOwnProperty(key)) {
+      const operator = operators[key];
+      const home_station = operator.home_station;
+      operator.name_station = operatorStationMap[home_station];
+    }
+  }
+
   const column = [
     {
       name: "Nom",
@@ -36,8 +62,9 @@ function Operator() {
     },
     {
       name: "Station",
-      selector: (row) => row.home_station,
+      selector: (row) => row.name_station,
       sortable: true,
+      wrap: true,
     },
     {
       name: "Type",

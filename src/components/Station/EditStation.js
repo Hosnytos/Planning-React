@@ -17,7 +17,7 @@ function EditStation({ setOpenModal, EditStation }) {
   const navigate = useNavigate();
   const id_station = EditStation.id_station;
   const [station, setStation] = useState(null);
-  const [secteurtList, setSecteurList] = useState([]);
+  const [secteurs, setSecteurs] = useState([]);
 
   const [selectedStationName, setSelectedStationName] = useState(
     EditStation.name_station
@@ -51,8 +51,7 @@ function EditStation({ setOpenModal, EditStation }) {
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/secteur`).then((response) => {
-      const secteurIds = response.data.map((item) => item.id_secteur);
-      setSecteurList(secteurIds);
+      setSecteurs(response.data);
     });
   }, []);
 
@@ -133,9 +132,9 @@ function EditStation({ setOpenModal, EditStation }) {
                     <MenuItem value={station?.id_secteur}>
                       Sélectionner un secteur
                     </MenuItem>
-                    {secteurtList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {secteurs.map((item) => (
+                      <MenuItem key={item.name_secteur} value={item.id_secteur}>
+                        {item.name_secteur}
                       </MenuItem>
                     ))}
                   </MuiSelect>

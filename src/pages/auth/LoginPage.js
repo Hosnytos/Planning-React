@@ -58,7 +58,6 @@ export const LoginPage = () => {
     return user === validEmail && pwd === validPassword;
   };
 
-
   const isValid = checkCredentials(user, pwd);
 
   const handleSubmit = (e) => {
@@ -85,13 +84,11 @@ export const LoginPage = () => {
       /* toast.success("Bienvenue " + user + " ! 🚀", {
         autoClose: 3000,
       }); */
-    } 
-    else if (!isValidEmail) {
+    } else if (!isValidEmail) {
       toast.warning("Veuillez entrer une adresse email correcte", {
         autoClose: 2000,
       });
-    }
-    else {
+    } else {
       console.log("ERROR");
       toast.error("L'e-mail ou le mot de passe est incorrect !", {
         autoClose: 2000,
@@ -177,10 +174,7 @@ export const LoginPage = () => {
             />
           </div>
 
-          <button
-            className="login-button"
-            type="submit"
-          >
+          <button className="login-button" type="submit">
             Connexion
           </button>
         </form>

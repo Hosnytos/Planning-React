@@ -14,7 +14,9 @@ function Station() {
   const [editStation, setEditStation] = useState(null);
 
   const baseURL = "http://127.0.0.1:8000/setting/station";
+  const secteurURL = "http://127.0.0.1:8000/setting/secteur";
   const [stations, setStations] = useState([]);
+  const [secteurs, setSSecteurs] = useState([]);
   const [stationSearch, setStationSearch] = useState([]);
 
   React.useEffect(() => {
@@ -23,6 +25,30 @@ function Station() {
       setStationSearch(response.data);
     });
   }, []);
+
+  React.useEffect(() => {
+    axios.get(secteurURL).then((response) => {
+      setSSecteurs(response.data);
+    });
+  }, []);
+
+  // Créez un objet pour stocker les correspondances entre les secteurs et les stations
+  const operatorSecteurMap = {};
+
+  // Parcourez le tableau des secteurs et créez une correspondance avec les stations
+  secteurs.forEach((secteur) => {
+    operatorSecteurMap[secteur.id_secteur] = secteur.name_secteur;
+  });
+
+  // Maintenant, ajoutez le nom de la station correspondante à chaque opérateur
+  for (const key in stations) {
+    if (stations.hasOwnProperty(key)) {
+      const station = stations[key];
+      const name_secteur = station.id_secteur;
+      station.name_secteur = operatorSecteurMap[name_secteur];
+    }
+  }
+
   const column = [
     {
       name: "Nom",
@@ -31,14 +57,15 @@ function Station() {
       wrap: true,
     },
     {
-      name: "Capacité max",
+      name: "Capacité",
       selector: (row) => row.capa_max,
       sortable: true,
     },
     {
-      name: "Id Secteur",
-      selector: (row) => row.id_secteur,
+      name: "Secteur",
+      selector: (row) => row.name_secteur,
       sortable: true,
+      wrap: true,
     },
     {
       name: "Id Station",

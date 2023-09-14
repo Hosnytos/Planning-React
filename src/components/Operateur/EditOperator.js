@@ -34,8 +34,6 @@ function EditOperator({ setOpenModal, EditOperator }) {
   const id_operateur = EditOperator.id_operateur;
   const [operator, setOperator] = useState(null);
   const [shiftList, setShiftList] = useState([]);
-  const [stationList, setStationList] = useState([]);
-
   const [selectedFullName, setSelectedFullName] = useState(
     EditOperator.name_operateur
   );
@@ -46,6 +44,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
   const handleCardIdChange = (event) => {
     setSelectedCardId(event.target.value);
   };
+  const [stations, setStations] = useState([]);
   const [selectedStationItem, setSelectedStationItem] = useState(
     EditOperator.home_station
   );
@@ -103,8 +102,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
-      const stationIds = response.data.map((item) => item.id_station);
-      setStationList(stationIds);
+      setStations(response.data);
     });
   }, []);
 
@@ -190,9 +188,9 @@ function EditOperator({ setOpenModal, EditOperator }) {
                     <MenuItem value={operator?.home_station}>
                       Sélectionner une station
                     </MenuItem>
-                    {stationList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {stations.map((item) => (
+                      <MenuItem key={item.name_station} value={item.id_station}>
+                        {item.name_station}
                       </MenuItem>
                     ))}
                   </MuiSelect>

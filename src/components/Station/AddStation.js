@@ -20,12 +20,11 @@ function AddStation({ setOpenModal }) {
     setSelectedSecteurItem(event.target.value);
   };
 
-  const [secteurList, setSecteurList] = useState([]);
+  const [secteurs, setSecteurs] = useState([]);
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/secteur`).then((response) => {
-      const secteurIds = response.data.map((item) => item.id_secteur);
-      setSecteurList(secteurIds);
+      setSecteurs(response.data);
     });
   }, []);
 
@@ -99,9 +98,9 @@ function AddStation({ setOpenModal }) {
                     style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
-                    {secteurList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {secteurs.map((item) => (
+                      <MenuItem key={item.name_secteur} value={item.id_secteur}>
+                        {item.name_secteur}
                       </MenuItem>
                     ))}
                   </MuiSelect>

@@ -37,7 +37,7 @@ function AddOperator({ setOpenModal }) {
   };
 
   const [selectedShiftItem, setSelectedShiftItem] = useState("");
-
+  const [stations, setStations] = useState([]);
   const [selectedDateEntree, setSelectedDateEntree] = useState(null);
   const handleDateEntreeChange = (date) => {
     const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
@@ -53,7 +53,6 @@ function AddOperator({ setOpenModal }) {
   };
 
   const [shiftList, setShiftList] = useState([]);
-  const [stationList, setStationList] = useState([]);
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/shift`).then((response) => {
@@ -64,8 +63,7 @@ function AddOperator({ setOpenModal }) {
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
-      const stationIds = response.data.map((item) => item.id_station);
-      setStationList(stationIds);
+      setStations(response.data);
     });
   }, []);
 
@@ -144,9 +142,9 @@ function AddOperator({ setOpenModal }) {
                     style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
-                    {stationList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {stations.map((item) => (
+                      <MenuItem key={item.name_station} value={item.id_station}>
+                        {item.name_station}
                       </MenuItem>
                     ))}
                   </MuiSelect>

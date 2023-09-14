@@ -1,164 +1,77 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
 import "../../styles/Competences.css";
 import colors from "../../styles/colors";
 import DataTable from "react-data-table-component";
 import { FaSearch } from "react-icons/fa";
-
-const ope_skills = [
-  {
-    name_operateur: "Alice Smith",
-    Co_Az: 1,
-    SIM_Leader: 3,
-    Leader_5S: 0,
-    SST: 4,
-    last_assesement: "2023-08-17",
-  },
-  {
-    name_operateur: "Bob Johnson",
-    Co_Az: 2,
-    SIM_Leader: 1,
-    Leader_5S: 2,
-    SST: 3,
-    last_assesement: "2023-03-22",
-  },
-  {
-    name_operateur: "Charlie Brown",
-    Co_Az: 4,
-    SIM_Leader: 0,
-    Leader_5S: 4,
-    SST: 1,
-    last_assesement: "2022-12-07",
-  },
-  {
-    name_operateur: "David Lee",
-    Co_Az: 3,
-    SIM_Leader: 2,
-    Leader_5S: 3,
-    SST: 0,
-    last_assesement: "2022-11-10",
-  },
-  {
-    name_operateur: "Emma Taylor",
-    Co_Az: 1,
-    SIM_Leader: 3,
-    Leader_5S: 1,
-    SST: 4,
-    last_assesement: "2022-07-09",
-  },
-  {
-    name_operateur: "Frank Martin",
-    Co_Az: 0,
-    SIM_Leader: 4,
-    Leader_5S: 2,
-    SST: 1,
-    last_assesement: "2021-06-01",
-  },
-  {
-    name_operateur: "Grace Wilson",
-    Co_Az: 2,
-    SIM_Leader: 1,
-    Leader_5S: 3,
-    SST: 4,
-    last_assesement: "2020-02-27",
-  },
-  {
-    name_operateur: "Henry Anderson",
-    Co_Az: 3,
-    SIM_Leader: 0,
-    Leader_5S: 4,
-    SST: 2,
-    last_assesement: "2023-08-13",
-  },
-  {
-    name_operateur: "Isabella Martinez",
-    Co_Az: 1,
-    SIM_Leader: 2,
-    Leader_5S: 1,
-    SST: 3,
-    last_assesement: "2023-06-11",
-  },
-  {
-    name_operateur: "Jack Robinson",
-    Co_Az: 4,
-    SIM_Leader: 3,
-    Leader_5S: 0,
-    SST: 2,
-    last_assesement: "2022-05-07",
-  },
-];
-
-const column = [
-  {
-    name: "Nom",
-    selector: (row) => row.name_operateur,
-    sortable: true,
-    wrap: true,
-  },
-  {
-    name: "Co_Az",
-    selector: (row) => row.Co_Az,
-  },
-  {
-    name: "SIM_Leader",
-    selector: (row) => row.SIM_Leader,
-  },
-  {
-    name: "5S_Leader",
-    selector: (row) => row.Leader_5S,
-  },
-  {
-    name: "SST",
-    selector: (row) => row.SST,
-  },
-  {
-    name: "Date Eval",
-    selector: (row) => row.last_assesement,
-  },
-];
-
-const customStyles = {
-  table: {
-    style: {
-      borderRadius: "15px 15px 0 0",
-      zIndex: 0,
-    },
-  },
-  headRow: {
-    style: {
-      backgroundColor: "#3dcd58",
-      textTransform: "uppercase",
-      borderRadius: "15px 15px 0 0",
-      fontWeight: "bold",
-      color: colors.white,
-    },
-  },
-  headCells: {
-    style: {
-      justifyContent: "center",
-    },
-  },
-  cells: {
-    style: {
-      justifyContent: "center",
-    },
-  },
-  pagination: {
-    style: {
-      borderRadius: "0 0 15px 15px",
-    },
-  },
-};
+import ShowSoftCompetence from "../ShowSoftCompetence";
 
 function Competence() {
   const [operatorSearch, setOperatorSearch] = useState([]);
+  const [softSkills, setSoftSkills] = useState([]);
+  const [operators, setOperators] = useState([]);
+  const [stations, setStations] = useState([]);
+
+  const softSkillsURL = "http://127.0.0.1:8000/setting/softcompetence";
+  const operateurURL = "http://127.0.0.1:8000/setting/operateur";
+  const stationURL = "http://127.0.0.1:8000/setting/station";
 
   React.useEffect(() => {
-    setOperatorSearch(ope_skills);
+    axios.get(softSkillsURL).then((response) => {
+      const filteredSoftSkills = Object.values(response.data).filter((item) => {
+        const id_station = item.id_station;
+        const level_competence = item.level_competence;
+        return (
+          level_competence === 1 &&
+          (id_station === 52 ||
+            id_station === 63 ||
+            id_station === 65 ||
+            id_station === 66)
+        );
+      });
+      setSoftSkills(filteredSoftSkills);
+      setOperatorSearch(filteredSoftSkills);
+    });
   }, []);
 
+  React.useEffect(() => {
+    axios.get(operateurURL).then((response) => {
+      setOperators(response.data);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    axios.get(stationURL).then((response) => {
+      setStations(response.data);
+    });
+  }, []);
+
+  // Créez un objet pour stocker les correspondances entre les compétences et les opérateurs
+  const softSkillOperatoMap = {};
+  const softSkillStationMap = {};
+
+  // Parcourez le tableau des opérateurs et créez une correspondance avec les compétences
+  operators.forEach((operator) => {
+    softSkillOperatoMap[operator.id_operateur] = operator.name_operateur;
+  });
+  // Parcourez le tableau des stations et créez une correspondance avec les compétences
+  stations.forEach((station) => {
+    softSkillStationMap[station.id_station] = station.name_station;
+  });
+
+  // Maintenant, ajoutez le nom de la station correspondante à chaque opérateur
+  for (const key in softSkills) {
+    if (softSkills.hasOwnProperty(key)) {
+      const softSkill = softSkills[key];
+      const id_station = softSkill.id_station;
+      const id_operateur = softSkill.id_operateur;
+      softSkill.name_station = softSkillStationMap[id_station];
+      softSkill.name_operateur = softSkillOperatoMap[id_operateur];
+    }
+  }
+
   function handleOperatorSearch(event) {
-    const newOperator = ope_skills.filter((row) => {
+    const newOperator = softSkills.filter((row) => {
       return row.name_operateur
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
@@ -166,6 +79,90 @@ function Competence() {
 
     setOperatorSearch(newOperator);
   }
+
+  const column = [
+    {
+      name: "Nom",
+      selector: (row) => row.name_operateur,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: "Compétences",
+      cell: (row) => {
+        if (row.id_station === 52) {
+          return (
+            <div className="skill-container">
+              <div className="operator-red-skill-container">
+                {row.name_station}
+              </div>
+              <div className="assessment-container">{row.last_assesement}</div>
+            </div>
+          );
+        } else if (row.id_station === 63) {
+          return (
+            <div className="skill-container">
+              <div className="operator-green-skill-container">
+                {row.name_station}
+              </div>
+              <div className="assessment-container">{row.last_assesement}</div>
+            </div>
+          );
+        } else if (row.id_station === 65) {
+          return (
+            <div className="skill-container">
+              <div className="operator-purple-skill-container">
+                {row.name_station}
+              </div>
+              <div className="assessment-container">{row.last_assesement}</div>
+            </div>
+          );
+        } else {
+          return (
+            <div className="skill-container">
+              <div className="operator-orange-skill-container">
+                {row.name_station}
+              </div>
+              <div className="assessment-container">{row.last_assesement}</div>
+            </div>
+          );
+        }
+      },
+    },
+  ];
+
+  const customStyles = {
+    table: {
+      style: {
+        borderRadius: "15px 15px 0 0",
+        zIndex: 0,
+      },
+    },
+    headRow: {
+      style: {
+        backgroundColor: "#3dcd58",
+        textTransform: "uppercase",
+        borderRadius: "15px 15px 0 0",
+        fontWeight: "bold",
+        color: colors.white,
+      },
+    },
+    headCells: {
+      style: {
+        justifyContent: "center",
+      },
+    },
+    cells: {
+      style: {
+        justifyContent: "center",
+      },
+    },
+    pagination: {
+      style: {
+        borderRadius: "0 0 15px 15px",
+      },
+    },
+  };
 
   return (
     <div className="main-skill">
