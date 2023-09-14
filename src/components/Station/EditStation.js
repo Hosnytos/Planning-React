@@ -105,6 +105,7 @@ function EditStation({ setOpenModal, EditStation }) {
           <Grid container className="station-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 variant="outlined"
                 name="nameStation"
                 label="Nom"
@@ -113,6 +114,7 @@ function EditStation({ setOpenModal, EditStation }) {
                 onChange={handleStationNameChange}
               />
               <TextField
+                required
                 variant="outlined"
                 name="capacityMax"
                 label="Capacité max"

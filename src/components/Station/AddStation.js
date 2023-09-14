@@ -77,12 +77,14 @@ function AddStation({ setOpenModal }) {
           <Grid container className="station-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="stationName"
                 label="Nom"
               />
               <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="capaMax"

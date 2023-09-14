@@ -66,6 +66,7 @@ function EditSecteur({ setOpenModal, EditSecteur }) {
           <Grid container className="secteur-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 variant="outlined"
                 name="secteurName"
                 label="Nom"

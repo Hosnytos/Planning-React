@@ -57,6 +57,7 @@ function AddSecteur({ setOpenModal }) {
           <Grid container className="secteur-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="secteurName"

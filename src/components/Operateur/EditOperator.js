@@ -161,6 +161,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
           <Grid container className="operator-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 variant="outlined"
                 name="fullName"
                 label="Nom"
@@ -169,6 +170,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
                 onChange={handleNameChange}
               />
               <TextField
+                required
                 variant="outlined"
                 name="CardID"
                 label="CardID"

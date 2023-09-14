@@ -2,6 +2,7 @@ import { Button, FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
 import React, { Component } from "react";
 import SaiseOperatorsList from "./SaisieOperatorsList";
 import "../../styles/FormSaiseOperator.css";
+import { toast } from "react-toastify";
 
 export class FormSaiseOperator extends Component {
   greenRadioStyle = {
@@ -9,7 +10,21 @@ export class FormSaiseOperator extends Component {
   };
   continue = (e) => {
     e.preventDefault();
-    this.props.nextStep();
+    const operators = this.props.values.operators;
+    const shift = this.props.values.shift;
+    if (operators.length > 0) {
+      if (shift.length !== 0) {
+        this.props.nextStep();
+      } else {
+        toast.error("Veuillez saisir un horaire !", {
+          autoClose: 2000,
+        });
+      }
+    } else {
+      toast.error("Veuillez saisir au moins un opérateur !", {
+        autoClose: 2000,
+      });
+    }
   };
 
   handleNewOperators = (newOperators) => {
@@ -30,7 +45,7 @@ export class FormSaiseOperator extends Component {
 
           <div className="saisie-shift-and-continue">
             <p className="text-explication-saisieOne">
-              Veillez sélectionner l'équipe ainsi que les opérateurs qui
+              Veuillez sélectionner l'équipe ainsi que les opérateurs qui
               figureront dans le planning, puis cliquer sur continuer pour
               accéder à l'étape suivante.
             </p>
