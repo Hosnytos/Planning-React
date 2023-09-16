@@ -40,10 +40,6 @@ function EditOperator({ setOpenModal, EditOperator }) {
   const handleNameChange = (event) => {
     setSelectedFullName(event.target.value);
   };
-  const [selectedCardId, setSelectedCardId] = useState(EditOperator.id_card);
-  const handleCardIdChange = (event) => {
-    setSelectedCardId(event.target.value);
-  };
   const [stations, setStations] = useState([]);
   const [selectedStationItem, setSelectedStationItem] = useState(
     EditOperator.home_station
@@ -110,7 +106,6 @@ function EditOperator({ setOpenModal, EditOperator }) {
     event.preventDefault(); // Prevent the default form submission behavior
     const formData = {
       id_operateur: id_operateur,
-      id_card: event.target.CardID.value,
       name_operateur: event.target.fullName.value,
       id_shift: selectedShiftItem,
       home_station: selectedStationItem,
@@ -168,15 +163,6 @@ function EditOperator({ setOpenModal, EditOperator }) {
                 value={selectedFullName || ""}
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 onChange={handleNameChange}
-              />
-              <TextField
-                required
-                variant="outlined"
-                name="CardID"
-                label="CardID"
-                value={selectedCardId || ""}
-                style={{ marginTop: "8px", marginBottom: "16px" }}
-                onChange={handleCardIdChange}
               />
               <div className="edit-operator-div-dropdown">
                 <FormControl variant="outlined">

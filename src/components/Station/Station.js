@@ -51,7 +51,7 @@ function Station() {
 
   const column = [
     {
-      name: "Nom",
+      name: "Station",
       selector: (row) => row.name_station,
       sortable: true,
       wrap: true,
@@ -67,11 +67,11 @@ function Station() {
       sortable: true,
       wrap: true,
     },
-    {
-      name: "Id Station",
-      selector: (row) => row.id_station,
-      sortable: true,
-    },
+    // {
+    //   name: "Id Station",
+    //   selector: (row) => row.id_station,
+    //   sortable: true,
+    // },
     {
       name: "Action",
       cell: (row) => (

@@ -70,7 +70,6 @@ function AddOperator({ setOpenModal }) {
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     const formData = {
-      id_card: event.target.CardID.value,
       name_operateur: event.target.fullName.value,
       id_shift: selectedShiftItem,
       home_station: selectedStationItem,
@@ -126,13 +125,6 @@ function AddOperator({ setOpenModal }) {
                 variant="outlined"
                 name="fullName"
                 label="Nom"
-              />
-              <TextField
-                required
-                style={{ marginTop: "8px", marginBottom: "16px" }}
-                variant="outlined"
-                name="CardID"
-                label="CardID"
               />
               <div className="add-operator-div-dropdown">
                 <FormControl variant="outlined">

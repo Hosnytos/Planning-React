@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import colors from "../../styles/colors";
-//import axios from "axios";
+import axios from "axios";
 import { BiPlus } from "react-icons/bi";
 import { RxCross2 } from "react-icons/rx";
 import AddPlanningFields from "./AddPlanningFields";
@@ -12,9 +12,14 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   const [addPlanningFields, setAddPlanningFields] = useState(false);
   const [operators, setOperators] = useState([]);
   const [planningList, setPlanningList] = useState([]);
+  const [stations, setStations] = useState([]);
+  const [operatorInfos, setOperatorInfos] = useState([]);
+  const [operatorSkills, setOperatorSkills] = useState([]);
 
-  //const baseURL = "http://127.0.0.1:8000/setting/operateur";
+  const operatorURL = "http://127.0.0.1:8000/setting/operateur";
   //const [operatorSearch, setOperatorSearch] = useState([]);
+  const stationURL = "http://127.0.0.1:8000/setting/station";
+  const competenceURL = "http://127.0.0.1:8000/setting/competence";
 
   useEffect(() => {
     setOperators(values.operators);
@@ -23,6 +28,85 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   useEffect(() => {
     setPlanningList(JSON.parse(localStorage.getItem("planningList")) || []);
   }, []);
+
+  React.useEffect(() => {
+    axios.get(operatorURL).then((response) => {
+      setOperatorInfos(response.data);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    axios.get(stationURL).then((response) => {
+      setStations(response.data);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    axios.get(competenceURL).then((response) => {
+      const filteredOperatorSkills = response.data.filter((item) => {
+        const id_station = item.id_station;
+        const id_operateur = item.id_operateur;
+
+        // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
+        return (
+          planningList.find(
+            (planningItem) => planningItem.station === id_station
+          ) &&
+          planningList.find(
+            (planningItem) => planningItem.personne === id_operateur
+          )
+        );
+      });
+      setOperatorSkills(filteredOperatorSkills);
+    });
+  }, [planningList]);
+
+  // Créez un objet pour stocker les compétences uniques avec l'ID le plus élevé
+  const uniqueSkills = {};
+
+  // Parcourez la liste des compétences
+  for (const skill of operatorSkills) {
+    const key = `${skill.id_operateur}-${skill.id_station}`;
+
+    // Vérifiez si cette combinaison de nom et de station existe déjà et si l'ID actuel est plus élevé
+    if (!uniqueSkills[key] || skill.id > uniqueSkills[key].id) {
+      uniqueSkills[key] = skill;
+    }
+  }
+
+  // Convertissez l'objet en une liste d'éléments uniques
+  const uniqueSkillList = Object.values(uniqueSkills);
+
+  // Créez un objet pour stocker les correspondances entre les stations et les opérateurs
+  const operatorStationMap = {};
+  const operatorInfosMap = {};
+  const operatorSkillsMap = {};
+
+  // Parcourez le tableau des stations et créez une correspondance avec les opérateurs
+  stations.forEach((station) => {
+    operatorStationMap[station.id_station] = station.name_station;
+  });
+
+  operatorInfos.forEach((operatorInfo) => {
+    operatorInfosMap[operatorInfo.id_operateur] = operatorInfo.name_operateur;
+  });
+
+  uniqueSkillList.forEach((uniqueSkill) => {
+    operatorSkillsMap[uniqueSkill.id_operateur] = uniqueSkill.level_competence;
+  });
+
+  // Maintenant, ajoutez le nom de la station correspondante à chaque opérateur
+  for (const key in planningList) {
+    if (planningList.hasOwnProperty(key)) {
+      const planning = planningList[key];
+
+      const id_station = planning.station;
+      const id_operateur = planning.personne;
+      planning.name_station = operatorStationMap[id_station];
+      planning.name_operateur = operatorInfosMap[id_operateur];
+      planning.tut = operatorSkillsMap[id_operateur];
+    }
+  }
 
   // Column of datatable entries
   const column = [
@@ -46,7 +130,13 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
     },
     {
       name: "Equipe",
-      selector: (row) => row.shift,
+      selector: (row) => {
+        if (row.shift === "1") {
+          return <p>Equipe 1</p>;
+        } else {
+          return <p>Equipe 2</p>;
+        }
+      },
       sortable: true,
     },
     {
@@ -75,13 +165,13 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
     },
     {
       name: "Station",
-      selector: (row) => row.station,
+      selector: (row) => row.name_station,
       sortable: true,
       wrap: true,
     },
     {
       name: "Operateurs",
-      selector: (row) => row.personne,
+      selector: (row) => row.name_operateur,
       sortable: true,
       wrap: true,
     },
@@ -217,17 +307,19 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   };
 
   const handleDeleteEntry = (entryToDelete) => {
-    const confirmed = window.confirm("Voulez-vous vraiment supprimer cette entrée ?");
-  
+    const confirmed = window.confirm(
+      "Voulez-vous vraiment supprimer cette entrée ?"
+    );
+
     if (confirmed) {
       // Supprimez l'entrée du tableau
       const updatedPlanningList = planningList.filter(
         (entry) => entry !== entryToDelete
       );
-  
+
       // Mettez à jour le state avec le nouveau tableau
       setPlanningList(updatedPlanningList);
-  
+
       // Mettez à jour le localStorage
       localStorage.setItem("planningList", JSON.stringify(updatedPlanningList));
     }

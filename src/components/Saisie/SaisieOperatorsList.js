@@ -6,23 +6,43 @@ import { FaSearch, FaUserCheck, FaUserTimes } from "react-icons/fa";
 import axios from "axios";
 
 function SaiseOperatorsList({ handleNewOperators, values }) {
-  const baseURL = "http://127.0.0.1:8000/setting/operateur";
+  const baseURL = "http://127.0.0.1:8000/operateurs";
   const [operators, setOperators] = useState([]);
   const [operatorSearch, setOperatorSearch] = useState([]);
   const [selectedOperators, setSelectedOperators] = useState(new Set());
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(baseURL);
-        setOperators(response.data);
-        setOperatorSearch(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(baseURL);
+  //       const filteredActiveOperators = Object.values(response.data).filter((item) => {
+  //         const active_status = item.active_status;
+  //         return (
+  //           active_status === "true"
 
-    fetchData();
+  //         );
+  //       });
+  //       setOperators(response.data);
+  //       setOperatorSearch(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  React.useEffect(() => {
+    axios.get(baseURL).then((response) => {
+      const filteredActiveOperators = Object.values(response.data).filter(
+        (item) => {
+          const active_status = item.active_status;
+          return active_status === true;
+        }
+      );
+      setOperators(filteredActiveOperators);
+      setOperatorSearch(filteredActiveOperators);
+    });
   }, []);
 
   const column = [
@@ -31,11 +51,6 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
       selector: (row) => row.name_operateur,
       sortable: true,
       wrap: true,
-    },
-    {
-      name: "Shift",
-      selector: (row) => row.id_shift,
-      sortable: true,
     },
     {
       name: "Statut",
@@ -103,7 +118,6 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
   }
 
   function handleSearch(event) {
-
     if (parseInt(values.shift) === 1 || parseInt(values.shift) === 2) {
       // Utiliser la fonction de recherche basée sur id_shift
       const newOperator = operators.filter((row) =>

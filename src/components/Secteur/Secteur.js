@@ -30,10 +30,10 @@ function Secteur() {
       sortable: true,
       wrap: true,
     },
-    {
-      name: "Id Secteur",
-      selector: (row) => row.id_secteur,
-    },
+    // {
+    //   name: "Id Secteur",
+    //   selector: (row) => row.id_secteur,
+    // },
     {
       name: "Action",
       cell: (row) => (

@@ -105,3 +105,12 @@ input:focus {
   font-style: italic;
   font-weight: 400;
 }
+
+@media print {
+  .main-profile,
+  .sidebar-container,
+  .operator-search-bar,
+  .operator-search-hr {
+    display: none;
+  }
+}

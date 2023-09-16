@@ -57,10 +57,6 @@ function Operator() {
       wrap: true,
     },
     {
-      name: "CardID",
-      selector: (row) => row.id_card,
-    },
-    {
       name: "Station",
       selector: (row) => row.name_station,
       sortable: true,
