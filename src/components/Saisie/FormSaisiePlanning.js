@@ -112,13 +112,13 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   const column = [
     {
       name: "5S",
-      selector: (row) => row.leader5S,
+      selector: (row) => row.leader5S ? "🟢" : "",
       sortable: true,
       wrap: true,
     },
     {
       name: "SST",
-      selector: (row) => row.SST,
+      selector: (row) => row.SST ? "🟢" : "",
       sortable: true,
       wrap: true,
     },
@@ -244,7 +244,7 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
     const missingTut3 = [];
 
     planningList.forEach((entry) => {
-      const { date, SST, station, tut } = entry;
+      const { date, SST, name_station, tut } = entry;
 
       // Vérifiez si le jour existe dans l'objet, sinon initialisez-le avec false
       if (!daysWithSST[date]) {
@@ -260,10 +260,10 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       if (tut === 1) {
         const hasTut3 = planningList.some(
           (item) =>
-            item.date === date && item.station === station && item.tut === 3
+            item.date === date && item.name_station === name_station && item.tut >= 3
         );
         if (!hasTut3) {
-          missingTut3.push({ date, station });
+          missingTut3.push({ date, name_station });
         }
       }
     });
@@ -283,8 +283,8 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
         localStorage.removeItem("planningList");
       } else {
         // Affichez un message d'erreur pour les dates et les stations manquantes de Tut3
-        const errorMessage = `Il doit y avoir un Tut 3 pour les dates et les stations suivantes : ${missingTut3
-          .map((item) => `\nDate : ${item.date} | Station : ${item.station}`)
+        const errorMessage = `Il doit y avoir au moins un Tuteur de niveau 3 pour les dates et les stations suivantes : ${missingTut3
+          .map((item) => `\nDate : ${item.date} | Station : ${item.name_station}`)
           .join(", ")}`;
         alert(errorMessage);
       }

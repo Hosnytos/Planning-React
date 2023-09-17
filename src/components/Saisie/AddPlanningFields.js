@@ -48,6 +48,7 @@ function AddPlanningFields({
   const [operatorStations, setOperatorStations] = useState([]);
   const [selectedSemaineItem, setSelectedSemaineItem] = useState("");
   const [selectedJours, setSelectedJours] = useState([]);
+  const [operatorSoftSkills, setOperatorSoftSkills] = useState([]);
 
   const handleOperateurChange = (event) => {
     setSelectedOperateur(event.target.value);
@@ -59,12 +60,6 @@ function AddPlanningFields({
 
   const handleSemaineChange = (event) => {
     setSelectedSemaineItem(event.target.value);
-  };
-  const rdnNumb = () => {
-    var randomNum = Math.random();
-
-    // Arrondit le nombre à 0 ou 1
-    return Math.round(randomNum);
   };
 
   // Transform operators ID into names
@@ -109,6 +104,24 @@ function AddPlanningFields({
     });
   }, []);
 
+  // Retrieve selected operator soft skills
+  React.useEffect(() => {
+    axios.get("http://127.0.0.1:8000/setting/softcompetence").then((response) => {
+      const filteredOperatorSoftSkills = response.data.filter((item) => {
+        const id_station = item.id_station;
+        const id_operateur = item.id_operateur;
+
+        // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
+        return (
+          id_operateur === selectedOperateur &&
+          (id_station === 52 ||
+            id_station === 65)
+        );
+      });
+      setOperatorSoftSkills(filteredOperatorSoftSkills);
+    });
+  }, [selectedOperateur]);
+
   // Créez un objet pour stocker les correspondances entre les stations
   const operatorStationMap = {};
 
@@ -144,6 +157,10 @@ function AddPlanningFields({
    jr -> tableau de**contenant les jours où va travailler l'opérateur
    */
   const handleValidation = (op, st, jr) => {
+    // Assign each soft skill to the selected operator
+    const SST = operatorSoftSkills.find(item => item.id_station === 52)?.level_competence;
+    const Leader_5S = operatorSoftSkills.find(item => item.id_station === 65)?.level_competence;
+
     const newPlanningList = jr.map((jour) => ({
       personne: op,
       shift: values.shift,
@@ -152,8 +169,8 @@ function AddPlanningFields({
       jour: jour,
       date: format(addDays(weekStartDate, jours.indexOf(jour)), "dd-MM-yyyy"),
       semaine: `${currentYear}-${currentWeek}`,
-      SST: rdnNumb(),
-      leader5S: 0,
+      SST: SST ? SST : 0,
+      leader5S: Leader_5S ? Leader_5S : 0,
       tut: 0,
     }));
 

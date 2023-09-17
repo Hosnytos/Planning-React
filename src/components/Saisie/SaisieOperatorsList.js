@@ -40,8 +40,10 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
           return active_status === true;
         }
       );
-      setOperators(filteredActiveOperators);
-      setOperatorSearch(filteredActiveOperators);
+      // Reverse alphabetically
+      const orderedActiveOperators = filteredActiveOperators.reverse();
+      setOperators(orderedActiveOperators);
+      setOperatorSearch(orderedActiveOperators);
     });
   }, []);
 
@@ -202,7 +204,7 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
             <input
               type="text"
               placeholder="Recherche..."
-              onChange={handleSearch}
+              onChange={handleOperatorSearch}
             />
           </div>
         </div>
