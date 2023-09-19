@@ -97,7 +97,7 @@ function Secteur() {
   };
 
   return (
-    <div className="main-secteur">
+    <div data-testid="secteur-main" className="main-secteur">
       <div>
         <div className="secteur-search-bar">
           <div className="input-wrapper">

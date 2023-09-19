@@ -1,21 +1,187 @@
-.home-test {
-  background-color: aqua;
-  border: 1px solid blue;
-  height: 100vh;
+.main-home {
+  display: block;
+  flex-direction: column;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: scroll;
+}
+
+th {
+  background-color: #358543;
+  color: white;
+  font-weight: 600;
+}
+
+.table-equipe {
+  background-color: #ecc151;
+}
+
+.sub-col-compt th {
+  background-color: #56bd69;
+}
+
+/* ===============================================================================================
+                                    DATAS SECTION
+==================================================================================================
+*/
+.main-home-datas-section {
   display: flex;
+  justify-content: space-around;
+  height: 100%;
+  padding-bottom: 22px;
+}
 
+.home-dashboard-section {
+  background-color: white;
+  width: 70%;
+  height: 100px;
+  border-radius: 20px;
+}
+
+.home-fullfill-section {
+  display: flex;
+  background-image: url("../assets/logo/section_magicfullfill.png"); /* Chemin vers votre image */
+  background-size: cover; /* Pour que l'image couvre toute la section */
+  background-repeat: no-repeat;
+  /* background-color: #66e17d; */
+  width: 20%;
+  height: 100px;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: end;
+  padding-bottom: 5px;
+}
+
+.fullfill-button {
+  cursor: pointer;
+  border: none;
+  background-color: white;
+  color: #3dcd58;
+  height: 30px;
+  width: 60%;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fullfill-button:active {
+  cursor: pointer;
+  border: none;
+  background-color: #3dcd58;
+  color: white;
+  height: 30px;
+  width: 60%;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+/* ===============================================================================================
+                                    PLANNING SELECTION
+==================================================================================================
+*/
+
+.main-home-planning {
+  display: block;
+  flex-direction: column;
+}
+
+.main-planning-items {
+  /* background-color: white; */
+  height: 60px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+/*PRESENSE*/
+.presence-selection {
+  display: flex;
+  width: 15%;
+  cursor: pointer;
   align-items: center;
-  padding: 100px;
+  user-select: none;
 }
 
-.vf1 {
-  background-color: yellow;
-  height: 50%;
-  width: 50%;
+.presence-selection input[type="radio"] {
+  display: none;
 }
 
-.vf2 {
-  background-color: brown;
-  height: 50%;
+.presence-selection label {
+  display: flex;
+  /* border-radius: 10px; */
+  color: rgb(173, 173, 173);
+  border: 2px solid rgb(173, 173, 173);
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+  width: 90%;
+  font-size: 16px;
+  cursor: pointer;
+}
+.presence-selection input[type="radio"]:checked + label {
+  color: #3dcd58;
+  border: 3px solid #3dcd58;
+  font-weight: 700;
+}
+
+/*WEEK*/
+.week-selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50%;
+  color: #292d32;
+}
+
+.button-prev-week {
+  cursor: pointer;
+  border: none;
+  background-color: #f3f4f8;
+  font-size: 35px;
+}
+
+.button-next-week {
+  cursor: pointer;
+  border: none;
+  background-color: #f3f4f8;
+  font-size: 35px;
+}
+
+.month-year-text {
+  color: #555658;
+  font-size: 20px;
+  font-weight: 600;
+}
+.week-dropdown {
+  color: #3dcd58;
+  font-size: 18px;
+  border: none;
+  background-color: #f3f4f8;
+}
+
+/*SHIFT*/
+.shift-selection {
+  width: 15%;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+  /* background-color: #66e17d; */
+}
+
+.inactive {
+  color: #3dcd58; /* Couleur verte lorsque le switch est OFF */
+}
+
+/* Styles pour le texte "A-M" lorsque le switch est ON */
+.active {
+  color: #8e8f92; /* Couleur verte lorsque le switch est ON */
+}
+/* ===============================================================================================
+                                    PLANNING TABLE
+==================================================================================================
+*/
+
+/*TABLE SECTION*/
+.main-planning-table {
 }
