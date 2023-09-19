@@ -12,7 +12,8 @@
     "@mui/material": "^5.13.6",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^29.5.4",
     "axios": "^1.4.0",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
@@ -32,7 +33,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns node_modules/jest/bin/jest.js/",
     "eject": "react-scripts eject",
     "cypress": "cypress open"
   },

@@ -96,7 +96,9 @@ function SupportPage() {
             ></textarea>
           </div>
           <div className="support-submit-container">
-            <button className="support-button">Envoyer</button>
+            <button data-testid="envoyer-support" className="support-button">
+              Envoyer
+            </button>
           </div>
         </div>
       </form>

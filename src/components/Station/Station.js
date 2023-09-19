@@ -135,7 +135,7 @@ function Station() {
   };
 
   return (
-    <div className="main-station">
+    <div data-testid="station-main" className="main-station">
       <div>
         <div className="station-search-bar">
           <div className="input-wrapper">

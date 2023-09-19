@@ -150,6 +150,7 @@ function AddPlanningFields({
     }
   };
 
+  const currenTL = localStorage.getItem("currentUser");
   /*
    Fonction qui prends les entrées du formulaire pour le rajouter au planning
    op -> operateur
@@ -164,7 +165,7 @@ function AddPlanningFields({
     const newPlanningList = jr.map((jour) => ({
       personne: op,
       shift: values.shift,
-      tl: values.tl,
+      tl: currenTL,
       station: st,
       jour: jour,
       date: format(addDays(weekStartDate, jours.indexOf(jour)), "dd-MM-yyyy"),
@@ -224,7 +225,7 @@ function AddPlanningFields({
       return {
         personne: op,
         shift: values.shift,
-        tl: values.tl,
+        tl: currenTL,
         station: st,
         jour: jour,
         date: format(nextWeekDate, "yyyy-MM-dd"),

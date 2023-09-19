@@ -3,12 +3,14 @@ import "@testing-library/jest-dom";
 import {
   render,
   fireEvent,
-  waitFor,
   screen,
-  renderHook,
+  cleanup,
+  waitFor,
 } from "@testing-library/react";
-import SupportPage from "../components/SupportPage";
+import userEvent from "@testing-library/user-event";
+import SupportPage from "../components/Support/SupportPage";
 import { toast } from "react-toastify";
+import emailjs from "@emailjs/browser";
 
 // mock pour le toatufy
 jest.mock("react-toastify", () => ({
@@ -16,6 +18,10 @@ jest.mock("react-toastify", () => ({
     success: jest.fn(),
   },
 }));
+
+afterEach(() => {
+  cleanup();
+});
 
 describe("Support Page tests", () => {
   it("should render Support Page when we get in", () => {
@@ -44,11 +50,14 @@ describe("Support Page tests", () => {
     expect(envoyerButton).toBeInTheDocument();
   });
 
-  /*it("Should retrieve an error message because of empty fields validation", () => {
+  it("Should retrieve all elements of Support Form", () => {
     render(<SupportPage />);
 
     // Sélectionner le bouton "Envoyer"
     const envoyerButton = screen.getByRole("button", { name: "Envoyer" });
+
+    // Vérifiez que le bouton a les classes CSS spécifiques
+    expect(envoyerButton).toHaveClass("support-button");
 
     // Vérifier que le message d'erreur requis s'affiche pour chaque champ requis
     const nomInput = screen.getByPlaceholderText("Votre nom");
@@ -56,44 +65,10 @@ describe("Support Page tests", () => {
     const sujetInput = screen.getByPlaceholderText("Sujet du message");
     const messageTextarea = screen.getByPlaceholderText("Votre message");
 
-    // Saisir du texte dans le champ "Nom"
-    fireEvent.change(nomInput, { target: { value: "John Doe" } });
-
-    // Simuler un clic sur le bouton "Envoyer" pour soumettre le formulaire
-    fireEvent.click(envoyerButton);
-
     // Vérifier que les messages d'erreur requis s'affichent pour chaque champ requis
     expect(nomInput).toHaveAttribute("required");
     expect(emailInput).toHaveAttribute("required");
     expect(sujetInput).toHaveAttribute("required");
     expect(messageTextarea).toHaveAttribute("required");
   });
-
-  it("Should fill all fields and verify that the submit return a success message", async () => {
-    render(<SupportPage />);
-
-    // Sélectionner les champs du formulaire et les remplir
-    const nomInput = screen.getByPlaceholderText("Votre nom");
-    const emailInput = screen.getByPlaceholderText("Votre adresse email");
-    const sujetInput = screen.getByPlaceholderText("Sujet du message");
-    const messageTextarea = screen.getByPlaceholderText("Votre message");
-
-    fireEvent.change(nomInput, { target: { value: "John Doe" } });
-    fireEvent.change(emailInput, { target: { value: "john@doe.com" } });
-    fireEvent.change(sujetInput, { target: { value: "test unitaire" } });
-    fireEvent.change(messageTextarea, {
-      target: { value: "je suis entrain de tester la page de support" },
-    });
-
-    // Sélectionner le bouton "Envoyer"
-    const envoyerButton = screen.getByRole("button", { name: "Envoyer" });
-
-    // Simuler un clic sur le bouton "Envoyer" pour soumettre le formulaire
-    fireEvent.click(envoyerButton);
-
-    // Attendre que le message de succès apparaisse (utilise waitFor pour les actions asynchrones)
-    await waitFor(() => {
-      expect(toast.success).toHaveBeenCalled();
-    });
-  });*/
 });

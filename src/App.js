@@ -13,10 +13,11 @@ import SaisieForm from "./components/Saisie/SaisieForm";
 import Competence from "./components/Competence/Competence";
 import Secteur from "./components/Secteur/Secteur";
 import Station from "./components/Station/Station";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 function App() {
   const isLoggedIn = localStorage.getItem("isLogged");
-  console.log(isLoggedIn, "APP.JS");
+
   return (
     <>
       <Router>
@@ -35,7 +36,7 @@ function App() {
               <Route path="secteur" element={<Secteur />} />
               <Route path="station" element={<Station />} />
               <Route path="saisie" element={<SaisieForm />} />
-              <Route path="dashboard" element={<Home />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="support" element={<SupportPage />} />
               <Route path="profile" element={<UserProfile />} />
             </Route>

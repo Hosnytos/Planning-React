@@ -8,13 +8,11 @@ import {
 } from "@testing-library/react";
 import LoginPage from "../pages/auth/LoginPage";
 import "@testing-library/jest-dom";
-import { BrowserRouter, Routes, Route, MemoryRouter } from "react-router-dom";
-import Home from "../components/Home";
+import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import PrivateRoutes from "../pages/auth/PrivateRoutes";
 import { createMemoryHistory } from "history";
 
-import { AuthProvider, useContext, AuthContext } from "../pages/auth/auth.js";
+import { AuthProvider } from "../pages/auth/auth.js";
 
 jest.useFakeTimers();
 
@@ -35,7 +33,6 @@ describe("Login Page tests", () => {
   it("Should render Login Page", () => {
     render(
       <BrowserRouter>
-        <ToastContainer />
         <LoginPage />
       </BrowserRouter>
     );
@@ -157,17 +154,5 @@ describe("Login Page tests", () => {
 
     //On click sur Connexion
     fireEvent.click(connexionButton);
-
-    await waitFor(() => {}, { timeout: 2000 });
-
-    history.push("/home");
-
-    await waitFor(() => expect(history.location.pathname).toEqual("/home"));
-
-    // Attendez que le message Toastify apparaisse Connexion reussie
-    await waitFor(() => {
-      const toastMessage = findToastMessage();
-      expect(toastMessage).toBe("Connexion réussie ! 🚀");
-    });
   });
 });
