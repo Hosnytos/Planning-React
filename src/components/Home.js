@@ -6,8 +6,11 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import axios from "axios";
+import { GrDocumentPdf } from "react-icons/gr";
 
 function Home() {
+  const [shiftSelected, setShiftSelected] = useState(1);
+
   const weeks = [
     "2022-47",
     "2022-48",
@@ -69,7 +72,7 @@ function Home() {
     "2023-52",
   ]; // Liste des semaines
 
-  const [switchState, setSwitchState] = useState(true);
+  const [switchState, setSwitchState] = useState(false);
 
   //trouver la semaine actuelle en fonction des semaines de weeks
   function getCurrentWeekIndex() {
@@ -99,8 +102,6 @@ function Home() {
   const currentWeekIndex = getCurrentWeekIndex();
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(currentWeekIndex); // Indice de la semaine actuellement sélectionnée
 
-  //Plannings
-
   // Planning en fonction des paramètres année-semaine et équipe Mat ou AM
   const [rightPlanning, setRightPlanning] = useState([]);
 
@@ -113,12 +114,12 @@ function Home() {
         return (
           week === "52" &&
           date.split("-")[0] === "2022" &&
-          id_shift === "Equipe 2 "
+          id_shift === "Equipe " + shiftSelected + " "
         );
       });
       setRightPlanning(filteredSoftSkills);
     });
-  }, []);
+  }, [shiftSelected]);
 
   console.log(rightPlanning);
   const planningList = rightPlanning;
@@ -126,6 +127,7 @@ function Home() {
   // On trie par id_station de façon ascendante
   planningList.sort((a, b) => a.id_station - b.id_station);
 
+  // Composant personnalisé pour la sélection en mode switch button
   const AntSwitch = styled(Switch)(({ theme }) => ({
     width: 40,
     height: 20,
@@ -169,10 +171,18 @@ function Home() {
     },
   }));
 
+  // Gestion du switch Mat ou AM
   const handleSwitchClick = () => {
     setSwitchState(!switchState); // Inverse l'état du switch lorsqu'il est cliqué
+
+    if (switchState) {
+      setShiftSelected(1); // Si le switch est à Mat, définissez shiftSelected sur "2" (AM)
+    } else {
+      setShiftSelected(2); // Si le switch est à AM, définissez shiftSelected sur "1" (Mat)
+    }
   };
 
+  //Bouton Prev planning week
   const handlePrevWeekClick = () => {
     // Mettre à jour la semaine précédente
     setSelectedWeekIndex((prevIndex) =>
@@ -180,6 +190,7 @@ function Home() {
     );
   };
 
+  //Bouton Next planning week
   const handleNextWeekClick = () => {
     // Mettre à jour la semaine suivante
     setSelectedWeekIndex((prevIndex) =>
@@ -234,12 +245,16 @@ function Home() {
   const renderTableData = () => {
     return equipeData.map((equipe) => (
       <tr key={`${equipe.id_station}_${equipe.id_operateur}`}>
-        <td>{equipe.id_station}</td>
+        <td>
+          <p className="home-station" data-station={equipe.id_station}>
+            {equipe.id_station}
+          </p>
+        </td>
         {["lundi", "mardi", "mercredi", "jeudi", "vendredi"].map((jour) => (
           <React.Fragment key={jour}>
             {equipe.jours[jour].length > 0 ? (
               <>
-                <td>{equipe.id_operateur}</td>
+                <td className="home-operator-name">{equipe.id_operateur}</td>
                 {equipe.jours[jour].map((data, dataIndex) => (
                   <React.Fragment key={dataIndex}>
                     <td>{data["5S"]}</td>
@@ -266,11 +281,27 @@ function Home() {
     <div className="main-home">
       {/* DATAS */}
       <div className="main-home-datas-section">
-        <div className="home-dashboard-section"></div>
+        <div className="home-dashboard-section">
+          {/* PRESENCE TOTAL HEURE */}
+          <div className="home-presence-dashboard">
+            <p>Présence total</p>
 
-        {/* MAGIC FULLFILL BUTTON */}
-        <div className="home-fullfill-section">
-          <button className="fullfill-button">MagicFullFill</button>
+            <span>805 hrs</span>
+          </div>
+
+          {/* PRESENCE TOTAL HEURE */}
+          <div className="home-absence-dashboard">
+            <p>Absence total</p>
+
+            <span>10 hrs</span>
+          </div>
+        </div>
+
+        {/* PDF BUTTON */}
+        <div className="home-pdf-section">
+          <button className="pdf-button">
+            <GrDocumentPdf />
+          </button>
         </div>
       </div>
 
@@ -357,7 +388,7 @@ function Home() {
 
         {/* ===============  PLANNING TABLE  =================== */}
         <div className="main-planning-table">
-          <table cellspacing="0" border="2px" bordercolor="#000">
+          <table cellspacing="0">
             <thead>
               <tr>
                 <th className="table-equipe" rowSpan="2">
@@ -370,23 +401,23 @@ function Home() {
                 <th colSpan="4">Vendredi</th>
               </tr>
               <tr className="sub-col-compt">
-                <th>ID Opérateur</th>
+                <th>Opérateur</th>
                 <th>5S</th>
                 <th>SST</th>
                 <th>Niv</th>
-                <th>ID Opérateur</th>
+                <th>Opérateur</th>
                 <th>5S</th>
                 <th>SST</th>
                 <th>Niv</th>
-                <th>ID Opérateur</th>
+                <th>Opérateur</th>
                 <th>5S</th>
                 <th>SST</th>
                 <th>Niv</th>
-                <th>ID Opérateur</th>
+                <th>Opérateur</th>
                 <th>5S</th>
                 <th>SST</th>
                 <th>Niv</th>
-                <th>ID Opérateur</th>
+                <th>Opérateur</th>
                 <th>5S</th>
                 <th>SST</th>
                 <th>Niv</th>

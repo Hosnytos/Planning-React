@@ -3,27 +3,16 @@
   flex-direction: column;
   padding-left: 20px;
   padding-right: 20px;
+  max-height: 85vh;
   overflow-y: scroll;
-}
-
-th {
-  background-color: #358543;
-  color: white;
-  font-weight: 600;
-}
-
-.table-equipe {
-  background-color: #ecc151;
-}
-
-.sub-col-compt th {
-  background-color: #56bd69;
 }
 
 /* ===============================================================================================
                                     DATAS SECTION
 ==================================================================================================
 */
+
+/* DASHBOARD */
 .main-home-datas-section {
   display: flex;
   justify-content: space-around;
@@ -32,47 +21,47 @@ th {
 }
 
 .home-dashboard-section {
-  background-color: white;
+  color: white;
+  /* background-color: white; */
   width: 70%;
   height: 100px;
   border-radius: 20px;
-}
-
-.home-fullfill-section {
   display: flex;
-  background-image: url("../assets/logo/section_magicfullfill.png"); /* Chemin vers votre image */
-  background-size: cover; /* Pour que l'image couvre toute la section */
-  background-repeat: no-repeat;
-  /* background-color: #66e17d; */
-  width: 20%;
-  height: 100px;
-  border-radius: 20px;
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
-  align-items: end;
-  padding-bottom: 5px;
+  margin-right: 10px;
 }
 
-.fullfill-button {
-  cursor: pointer;
-  border: none;
-  background-color: white;
-  color: #3dcd58;
-  height: 30px;
-  width: 60%;
+.home-presence-dashboard {
+  background-color: #5ce676;
+  margin-right: 10px;
+  padding-right: 10px;
+  padding-left: 10px;
+  height: 100px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 16px;
+}
+
+.home-presence-dashboard span {
+  font-size: 20px;
   font-weight: 600;
+  word-spacing: 2px;
 }
 
-.fullfill-button:active {
-  cursor: pointer;
-  border: none;
-  background-color: #3dcd58;
-  color: white;
-  height: 30px;
-  width: 60%;
+.home-absence-dashboard {
+  background-color: #ca2828;
+  margin-right: 10px;
+  padding-right: 10px;
+  padding-left: 10px;
+  height: 100px;
   border-radius: 10px;
-  font-size: 13px;
+}
+
+.home-absence-dashboard span {
+  font-size: 20px;
+  font-weight: 600;
+  word-spacing: 2px;
 }
 
 /* ===============================================================================================
@@ -91,6 +80,7 @@ th {
   border-radius: 20px;
   display: flex;
   justify-content: space-around;
+  padding-bottom: 10px;
 }
 
 /*PRESENSE*/
@@ -108,7 +98,6 @@ th {
 
 .presence-selection label {
   display: flex;
-  /* border-radius: 10px; */
   color: rgb(173, 173, 173);
   border: 2px solid rgb(173, 173, 173);
   align-items: center;
@@ -117,11 +106,14 @@ th {
   width: 90%;
   font-size: 16px;
   cursor: pointer;
+  margin-right: 5px;
+  border-radius: 10px;
+  background-color: white;
 }
 .presence-selection input[type="radio"]:checked + label {
   color: #3dcd58;
   border: 3px solid #3dcd58;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /*WEEK*/
@@ -159,6 +151,9 @@ th {
   background-color: #f3f4f8;
 }
 
+.pdf-and-shift {
+}
+
 /*SHIFT*/
 .shift-selection {
   width: 15%;
@@ -177,11 +172,153 @@ th {
 .active {
   color: #8e8f92; /* Couleur verte lorsque le switch est ON */
 }
+
+/*PDF*/
+
+.home-pdf-section {
+  display: flex;
+
+  /* background-color: #66e17d; */
+  width: 20%;
+  height: 100px;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: end;
+  padding-bottom: 5px;
+}
+
+.pdf-button {
+  cursor: pointer;
+  border: none;
+  background-color: #03a688;
+  height: 30px;
+  width: 50px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.pdf-button:active {
+  cursor: pointer;
+  border: none;
+  background-color: #0d5a4c;
+  height: 30px;
+  width: 50px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
 /* ===============================================================================================
                                     PLANNING TABLE
 ==================================================================================================
 */
 
 /*TABLE SECTION*/
-.main-planning-table {
+
+.home-operator-name {
+  font-weight: 600;
+}
+
+th {
+  padding: 15px 7px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 10px;
+  background-color: #358543;
+  color: white;
+  font-weight: 900;
+  border-right: 1px solid #000; /* 1px de bordure solide noire à droite */
+  border-left: 1px solid #000; /* 1px de bordure solide noire à droite */
+}
+
+.table-equipe {
+  background-color: #ecc151;
+}
+
+.sub-col-compt th {
+  background-color: #56bd69;
+}
+
+/* Appliquer une bordure droite aux cellules de données (<td>) */
+td {
+  padding: 4px 4px;
+  font-size: 12px;
+  border-right: 1px solid #000;
+  border-left: 1px solid #000; /* 1px de bordure solide noire à droite */
+}
+
+.home-station {
+  border-radius: 3px;
+  background-color: red;
+  text-align: center;
+  padding: 5px 5px;
+  font-weight: 700;
+}
+
+/* ============= Code couleur pour chaque station ============*/
+
+/* 506 FIC */
+.home-station[data-station="506 FIC"] {
+  background-color: #de78f5;
+  color: #48274f;
+}
+
+/* 507Controle HT */
+.home-station[data-station="507Controle HT"] {
+  background-color: #85a5cc;
+  color: #30395c;
+}
+
+/* 507 PrÈhenseur Habillage */
+.home-station[data-station="507 PrÈhenseur Habillage"] {
+  background-color: #08c5d1;
+  color: #00353f;
+}
+
+/* 508 EQF1 */
+.home-station[data-station="508 EQF1"] {
+  background-color: #03a688;
+  color: #10403b;
+}
+
+/* 508 EQF2 */
+.home-station[data-station="508 EQF2"] {
+  background-color: #c0d904;
+  color: #3a592c;
+}
+
+/* 508 EQF3 */
+.home-station[data-station="508 EQF3"] {
+  background-color: #8c8303;
+  color: #244009;
+}
+
+/* 508 EQF4 */
+.home-station[data-station="508 EQF4"] {
+  background-color: #8abf9c;
+  color: #10403b;
+}
+
+/* 509 Controle BT1 */
+.home-station[data-station="509 Controle BT1"] {
+  background-color: #f99f72;
+  color: #5b374d;
+}
+
+/* 509 Controle Final */
+.home-station[data-station="509 Controle Final"] {
+  background-color: #be9cc7;
+  color: #211a44;
+}
+
+/* 509 ContrÙle BT2 */
+.home-station[data-station="509 ContrÙle BT2"] {
+  background-color: #c684b5;
+  color: #291527;
+}
+
+/* 510 Emballage */
+.home-station[data-station="510 Emballage"] {
+  background-color: #f09569;
+  color: #6f4824;
 }
