@@ -5,7 +5,6 @@
   padding-right: 20px;
   max-height: 85vh;
   overflow-y: scroll;
-  max-height: 85vh;
 }
 
 /* ===============================================================================================
@@ -80,6 +79,11 @@
   display: flex;
   justify-content: space-around;
   padding-bottom: 10px;
+}
+
+.main-planning-table {
+  display: flex;
+  justify-content: center;
 }
 
 /*PRESENSE*/
@@ -207,6 +211,14 @@
   font-weight: 600;
 }
 
+table {
+  border-collapse: collapse;
+  border: 2px solid black;
+}
+.different-station {
+  border-top: 2px solid #000; /* Ajoute une bordure en haut des lignes différentes */
+}
+
 th {
   padding: 15px 7px;
   text-transform: uppercase;
@@ -237,7 +249,7 @@ td {
 
 .home-station {
   border-radius: 3px;
-  background-color: red;
+  background-color: #cf5c78;
   color: white;
   text-align: center;
   padding: 5px 5px;
@@ -261,9 +273,10 @@ td {
 }
 
 /* 507 PrÈhenseur Habillage */
-.home-station[data-station="507 PrÈhenseur Habillage"] {
+.home-station[data-station="507 Prï¿½henseur Habillage"] {
   background-color: #08c5d1;
-  color: #00353f;
+  /* color: #00353f; */
+  color: white;
 }
 
 /* 508 EQF1 */
@@ -331,22 +344,22 @@ td {
   @page {
     size: 16.5in 23.4in;
   }
-
-  .main-profile,
-  .sidebar-container,
-  .operator-search-bar,
-  .operator-search-hr,
-  .home-dashboard-section,
-  .home-pdf-section {
-    display: none;
-  }
+  /* @page {
+    size: landscape A3;
+  } */
 
   .main-home {
     overflow-y: visible !important;
+  }
+  .main-home-datas-section,
+  .main-planning-table {
+    display: block;
   }
 
   table {
     border-collapse: collapse; /* Assurez-vous que la bordure de la table est correctement rendue */
   }
+  tr {
+    page-break-inside: avoid;
+  }
 }
-

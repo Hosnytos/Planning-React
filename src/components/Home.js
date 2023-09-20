@@ -108,19 +108,49 @@ function Home() {
   React.useEffect(() => {
     axios.get("http://localhost:8000/setting/planning").then((response) => {
       const filteredSoftSkills = Object.values(response.data).filter((item) => {
-        const date = item.date;
         const week = item.week;
         const id_shift = item.id_shift;
+        //const id_station = item.id_station;
         return (
-          week === "51" &&
-          date.split("-")[0] === "2022" &&
+          week === "2023-15" &&
           //id_shift === "Equipe " + shiftSelected + " "
           id_shift === shiftSelected
+          // && (
+          //   id_station !== 67 &&
+          //   id_station !== 68 &&
+          //   id_station !== 69 &&
+          //   id_station !== 70 &&
+          //   id_station !== 71
+          // )
         );
       });
       setPlanningList(filteredSoftSkills);
     });
   }, [shiftSelected]);
+
+  //Process pour récupérer les noms des opérateurs
+  const [operatorInfos, setOperatorInfos] = useState([]);
+  React.useEffect(() => {
+    axios.get("http://127.0.0.1:8000/operateurs").then((response) => {
+      setOperatorInfos(response.data);
+    });
+  }, []);
+  const operatorInfosMap = {};
+  operatorInfos.forEach((operatorInfo) => {
+    operatorInfosMap[operatorInfo.id_operateur] = operatorInfo.name_operateur;
+  });
+
+  //Process pour récupérer les noms des stations
+  const [stationInfos, setStationInfos] = useState([]);
+  React.useEffect(() => {
+    axios.get("http://127.0.0.1:8000/setting/station").then((response) => {
+      setStationInfos(response.data);
+    });
+  }, []);
+  const stationInfosMap = {};
+  stationInfos.forEach((stationInfo) => {
+    stationInfosMap[stationInfo.id_station] = stationInfo.name_station;
+  });
 
   //Process pour récupérer les compétences pour SST et Leader 5S
   const [operatorSoftSkills, setOperatorSoftSkills] = useState([]);
@@ -189,6 +219,9 @@ function Home() {
       const planning = planningList[key];
       const id_operateur = planning.id_operateur;
       const id_station = planning.id_station;
+
+      planning.name_operateur = operatorInfosMap[id_operateur];
+      planning.name_station = stationInfosMap[id_station];
 
       planning.SST = operatorSoftSkills.find(
         (item) => item.id_station === 52 && item.id_operateur === id_operateur
@@ -296,16 +329,16 @@ function Home() {
   //================================================ CODE DU DESSUS OK NORMALEMENT =================================
   //===============================================================================================================
 
-  // Fonction pour regrouper les données par id_station et id_operateur
+  // Fonction pour regrouper les données par name_station et name_operateur
   const groupData = () => {
     const groupedData = {};
 
     planningList.forEach((item) => {
-      const equipeKey = `${item.id_station}_${item.id_operateur}`;
+      const equipeKey = `${item.name_station}_${item.name_operateur}`;
       if (!groupedData[equipeKey]) {
         groupedData[equipeKey] = {
-          id_station: item.id_station,
-          id_operateur: item.id_operateur,
+          name_station: item.name_station,
+          name_operateur: item.name_operateur,
           Leader_5S: item.Leader_5S,
           SST: item.SST,
           Niv: item.Niv,
@@ -318,7 +351,6 @@ function Home() {
           },
         };
       }
-      console.log(groupedData);
       const jourData = groupedData[equipeKey].jours[item.day];
       jourData.push({
         Leader_5S: groupedData[equipeKey].Leader_5S,
@@ -333,34 +365,43 @@ function Home() {
   const equipeData = groupData();
 
   const renderTableData = () => {
-    return equipeData.map((equipe) => (
-      <tr key={`${equipe.id_station}_${equipe.id_operateur}`}>
-        <td>
-          <p className="home-station" data-station={equipe.id_station}>
-            {equipe.id_station}
-          </p>
-        </td>
-        {["lundi", "mardi", "mercredi", "jeudi", "vendredi"].map((jour) => (
-          <React.Fragment key={jour}>
-            {equipe.jours[jour].length > 0 ? (
-              <>
-                <td className="home-operator-name">{equipe.id_operateur}</td>
-                <td>{equipe.Leader_5S ? "🟢" : ""}</td>
-                <td>{equipe.SST ? "🔴" : ""}</td>
-                <td>{equipe.Niv}</td>
-              </>
-            ) : (
-              <>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </>
-            )}
-          </React.Fragment>
-        ))}
-      </tr>
-    ));
+    let previousStation = null;
+    return equipeData.map((equipe) => {
+      const isDifferentStation = equipe.name_station !== previousStation;
+      previousStation = equipe.name_station;
+      return (
+        <tr
+          key={`${equipe.name_station}_${equipe.id_operateur}`}
+          className={isDifferentStation ? "different-station home-station" : "home-station"}
+          data-station={equipe.name_station}
+        >
+          <td>
+          <p  data-station={equipe.name_station}>
+              {equipe.name_station}
+            </p>
+          </td>
+          {["lundi", "mardi", "mercredi", "jeudi", "vendredi"].map((jour) => (
+            <React.Fragment key={jour}>
+              {equipe.jours[jour].length > 0 ? (
+                <>
+                  <td className="home-operator-name">{equipe.name_operateur}</td>
+                  <td>{equipe.Leader_5S ? "⚪" : ""}</td>
+                  <td>{equipe.SST ? "🔵" : ""}</td>
+                  <td>{equipe.Niv}</td>
+                </>
+              ) : (
+                <>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </>
+              )}
+            </React.Fragment>
+          ))}
+        </tr>
+      );
+    });
   };
 
   return (
