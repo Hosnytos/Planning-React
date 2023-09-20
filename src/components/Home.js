@@ -297,92 +297,94 @@ function Home() {
           </div>
         </div>
 
-        {/* PDF BUTTON */}
-        <div className="home-pdf-section">
-          <button className="pdf-button">
-            <GrDocumentPdf />
-          </button>
-        </div>
-      </div>
+        <div className="main-home-planning-section">
+          {/* PLANNING ITEMS */}
+          <div className="main-planning-items">
+            {/* PRESENCE */}
+            <div className="presence-selection">
+              <input
+                type="radio"
+                name="presence"
+                id="present-list"
+                checked
+              ></input>
+              <label htmlFor="present-list">Présents</label>
 
-      <div className="main-home-planning-section">
-        {/* PLANNING ITEMS */}
-        <div className="main-planning-items">
-          {/* PRESENCE */}
-          <div className="presence-selection">
-            <input
-              type="radio"
-              name="presence"
-              id="present-list"
-              checked
-            ></input>
-            <label htmlFor="present-list">Présents</label>
-
-            <input type="radio" name="presence" id="absent-list"></input>
-            <label htmlFor="absent-list">Absents</label>
-          </div>
-
-          {/* WEEK */}
-          <div className="week-selection">
-            <div>
-              <button
-                className="button-prev-week"
-                onClick={handlePrevWeekClick}
-              >
-                <BsArrowLeft />
-              </button>
+              <input type="radio" name="presence" id="absent-list"></input>
+              <label htmlFor="absent-list">Absents</label>
             </div>
 
-            <div>
-              <div className="month-year-text">
-                {getMonthYearFromDate(weeks[selectedWeekIndex])} /{" "}
-                <select
-                  className="week-dropdown"
-                  value={weeks[selectedWeekIndex]}
-                  onChange={(e) => {
-                    const selectedIndex = weeks.indexOf(e.target.value);
-                    setSelectedWeekIndex(selectedIndex);
-                  }}
+            {/* WEEK */}
+            <div className="week-selection">
+              <div>
+                <button
+                  className="button-prev-week"
+                  onClick={handlePrevWeekClick}
                 >
-                  {weeks.map((week) => (
-                    <option key={week} value={week}>
-                      {week}
-                    </option>
-                  ))}
-                </select>
+                  <BsArrowLeft />
+                </button>
+              </div>
+
+              <div>
+                <div className="month-year-text">
+                  {getMonthYearFromDate(weeks[selectedWeekIndex])} /{" "}
+                  <select
+                    className="week-dropdown"
+                    value={weeks[selectedWeekIndex]}
+                    onChange={(e) => {
+                      const selectedIndex = weeks.indexOf(e.target.value);
+                      setSelectedWeekIndex(selectedIndex);
+                    }}
+                  >
+                    {weeks.map((week) => (
+                      <option key={week} value={week}>
+                        {week}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  className="button-next-week"
+                  onClick={handleNextWeekClick}
+                >
+                  <BsArrowRight />
+                </button>
               </div>
             </div>
 
-            <div>
-              <button
-                className="button-next-week"
-                onClick={handleNextWeekClick}
-              >
-                <BsArrowRight />
-              </button>
-            </div>
-          </div>
+            <div className="pdf-and-shift">
+              {/* SHIFT */}
+              <div className="shift-selection" onClick={handleSwitchClick}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Typography
+                    value="1"
+                    className={switchState ? "active" : "inactive"}
+                  >
+                    Mat
+                  </Typography>
+                  <AntSwitch
+                    defaultChecked={switchState}
+                    inputProps={{ "aria-label": "ant design" }}
+                  />
+                  <Typography
+                    value="2"
+                    className={switchState ? "inactive" : "active"}
+                  >
+                    A-M
+                  </Typography>
+                </Stack>
+              </div>
 
-          {/* SHIFT */}
-          <div className="shift-selection" onClick={handleSwitchClick}>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography
-                value="1"
-                className={switchState ? "active" : "inactive"}
-              >
-                Mat
-              </Typography>
-              <AntSwitch
-                defaultChecked={switchState}
-                inputProps={{ "aria-label": "ant design" }}
-              />
-              <Typography
-                value="2"
-                className={switchState ? "inactive" : "active"}
-              >
-                A-M
-              </Typography>
-            </Stack>
+              {/* PDF BUTTON */}
+              <div className="home-pdf-section">
+                <button className="pdf-button">
+                  <GrDocumentPdf />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

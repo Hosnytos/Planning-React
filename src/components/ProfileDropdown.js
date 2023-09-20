@@ -43,8 +43,6 @@ function ProfileDropdown() {
       <DropdownItem linkValue="/profile" leftIcon={<MdSwitchAccount />}>
         Mon compte
       </DropdownItem>
-      <DropdownItem leftIcon={<GiSoccerKick />}>Section vide 1</DropdownItem>
-      <DropdownItem leftIcon={<GiSoccerKick />}>Section vide 2</DropdownItem>
 
       <hr></hr>
       <DropdownItem

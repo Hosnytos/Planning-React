@@ -14,7 +14,7 @@
 
 /* DASHBOARD */
 .main-home-datas-section {
-  display: flex;
+  display: block;
   justify-content: space-around;
   height: 100%;
   padding-bottom: 22px;
@@ -22,8 +22,6 @@
 
 .home-dashboard-section {
   color: white;
-  /* background-color: white; */
-  width: 70%;
   height: 100px;
   border-radius: 20px;
   display: flex;
@@ -152,11 +150,15 @@
 }
 
 .pdf-and-shift {
+  width: 15%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 /*SHIFT*/
 .shift-selection {
-  width: 15%;
   display: flex;
   align-items: center;
   user-select: none;
@@ -176,14 +178,10 @@
 /*PDF*/
 
 .home-pdf-section {
-  display: flex;
-
   /* background-color: #66e17d; */
   width: 20%;
   height: 100px;
   border-radius: 20px;
-  justify-content: center;
-  align-items: end;
   padding-bottom: 5px;
 }
 
