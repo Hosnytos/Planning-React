@@ -37,7 +37,7 @@ function SaiseOperatorsList({ handleNewOperators, values }) {
       const filteredActiveOperators = Object.values(response.data).filter(
         (item) => {
           const active_status = item.active_status;
-          return active_status === true;
+          return active_status === 1;
         }
       );
       // Reverse alphabetically

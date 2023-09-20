@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import axios from "axios";
-import { GrDocumentPdf } from "react-icons/gr";
+import pdf from "../assets/logo/pdf.png";
 
 function Home() {
   const [shiftSelected, setShiftSelected] = useState(1);
@@ -103,26 +103,20 @@ function Home() {
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(currentWeekIndex); // Indice de la semaine actuellement sélectionnée
 
   // Planning en fonction des paramètres année-semaine et équipe Mat ou AM
-  const [rightPlanning, setRightPlanning] = useState([]);
+  const [planningList, setPlanningList] = useState([]);
 
   React.useEffect(() => {
     axios.get("http://localhost:8000/planning").then((response) => {
       const filteredSoftSkills = Object.values(response.data).filter((item) => {
-        const date = item.date;
         const week = item.week;
         const id_shift = item.id_shift;
-        return (
-          week === "52" &&
-          date.split("-")[0] === "2022" &&
-          id_shift === "Equipe " + shiftSelected + " "
-        );
+        return week === "2022-52" && id_shift === "Equipe 2 ";
       });
-      setRightPlanning(filteredSoftSkills);
+      setPlanningList(filteredSoftSkills);
     });
   }, [shiftSelected]);
 
-  console.log(rightPlanning);
-  const planningList = rightPlanning;
+  console.log(planningList);
 
   // On trie par id_station de façon ascendante
   planningList.sort((a, b) => a.id_station - b.id_station);
@@ -257,18 +251,18 @@ function Home() {
                 <td className="home-operator-name">{equipe.id_operateur}</td>
                 {equipe.jours[jour].map((data, dataIndex) => (
                   <React.Fragment key={dataIndex}>
-                    <td>{data["5S"]}</td>
-                    <td>{data.SST}</td>
-                    <td>{data.Niv}</td>
+                    <td>{data["5S"] ? "🟢" : "" }</td>
+                    <td>{data.SST ? "🟢" : "" }</td>
+                    <td>{data.Niv ? "🟢" : "" }</td>
                   </React.Fragment>
                 ))}
               </>
             ) : (
               <>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
+                <td>""</td>
+                <td>""</td>
+                <td>""</td>
+                <td>""</td>
               </>
             )}
           </React.Fragment>
@@ -380,8 +374,8 @@ function Home() {
 
               {/* PDF BUTTON */}
               <div className="home-pdf-section">
-                <button className="pdf-button">
-                  <GrDocumentPdf />
+                <button className="pdf-button" onClick={window.print}>
+                  <img className="pdf-button" src={pdf} alt="Logo_pdf" />
                 </button>
               </div>
             </div>

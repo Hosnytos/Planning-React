@@ -5,6 +5,7 @@
   padding-right: 20px;
   max-height: 85vh;
   overflow-y: scroll;
+  max-height: 85vh;
 }
 
 /* ===============================================================================================
@@ -188,24 +189,13 @@
 .pdf-button {
   cursor: pointer;
   border: none;
-  background-color: #03a688;
-  height: 30px;
-  width: 50px;
+  height: 35px;
+  width: 30px;
   border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
 }
 
-.pdf-button:active {
-  cursor: pointer;
-  border: none;
-  background-color: #0d5a4c;
-  height: 30px;
-  width: 50px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 700;
-}
 /* ===============================================================================================
                                     PLANNING TABLE
 ==================================================================================================
@@ -248,6 +238,7 @@ td {
 .home-station {
   border-radius: 3px;
   background-color: red;
+  color: white;
   text-align: center;
   padding: 5px 5px;
   font-weight: 700;
@@ -258,13 +249,15 @@ td {
 /* 506 FIC */
 .home-station[data-station="506 FIC"] {
   background-color: #de78f5;
-  color: #48274f;
+  /* color: #48274f; */
+  color: white;
 }
 
 /* 507Controle HT */
 .home-station[data-station="507Controle HT"] {
   background-color: #85a5cc;
-  color: #30395c;
+  /* color: #30395c; */
+  color: white;
 }
 
 /* 507 PrÈhenseur Habillage */
@@ -276,47 +269,84 @@ td {
 /* 508 EQF1 */
 .home-station[data-station="508 EQF1"] {
   background-color: #03a688;
-  color: #10403b;
+  /* color: #10403b; */
+  color: white;
 }
 
 /* 508 EQF2 */
 .home-station[data-station="508 EQF2"] {
   background-color: #c0d904;
-  color: #3a592c;
+  /* color: #3a592c; */
+  color: white;
 }
 
 /* 508 EQF3 */
 .home-station[data-station="508 EQF3"] {
   background-color: #8c8303;
-  color: #244009;
+  /* color: #244009; */
+  color: white;
 }
 
 /* 508 EQF4 */
 .home-station[data-station="508 EQF4"] {
   background-color: #8abf9c;
-  color: #10403b;
+  /* color: #10403b; */
+  color: white;
 }
 
 /* 509 Controle BT1 */
 .home-station[data-station="509 Controle BT1"] {
   background-color: #f99f72;
-  color: #5b374d;
+  /* color: #5b374d; */
+  color: white;
 }
 
 /* 509 Controle Final */
 .home-station[data-station="509 Controle Final"] {
   background-color: #be9cc7;
-  color: #211a44;
+  /* color: #211a44; */
+  color: white;
 }
 
 /* 509 ContrÙle BT2 */
 .home-station[data-station="509 ContrÙle BT2"] {
   background-color: #c684b5;
-  color: #291527;
+  /* color: #291527; */
+  color: white;
 }
 
 /* 510 Emballage */
 .home-station[data-station="510 Emballage"] {
   background-color: #f09569;
-  color: #6f4824;
+  /* color: #6f4824; */
+  color: white;
 }
+
+/* ===============================================================================================
+                                    PRINT TABLE
+==================================================================================================
+*/
+
+@media print {
+  @page {
+    size: 16.5in 23.4in;
+  }
+
+  .main-profile,
+  .sidebar-container,
+  .operator-search-bar,
+  .operator-search-hr,
+  .home-dashboard-section,
+  .home-pdf-section {
+    display: none;
+  }
+
+  .main-home {
+    overflow-y: visible !important;
+  }
+
+  table {
+    border-collapse: collapse; /* Assurez-vous que la bordure de la table est correctement rendue */
+  }
+}
+
