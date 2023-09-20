@@ -106,17 +106,109 @@ function Home() {
   const [planningList, setPlanningList] = useState([]);
 
   React.useEffect(() => {
-    axios.get("http://localhost:8000/planning").then((response) => {
+    axios.get("http://localhost:8000/setting/planning").then((response) => {
       const filteredSoftSkills = Object.values(response.data).filter((item) => {
+        const date = item.date;
         const week = item.week;
         const id_shift = item.id_shift;
-        return week === "2022-52" && id_shift === "Equipe 2 ";
+        return (
+          week === "51" &&
+          date.split("-")[0] === "2022" &&
+          //id_shift === "Equipe " + shiftSelected + " "
+          id_shift === shiftSelected
+        );
       });
       setPlanningList(filteredSoftSkills);
     });
   }, [shiftSelected]);
 
-  console.log(planningList);
+  //Process pour récupérer les compétences pour SST et Leader 5S
+  const [operatorSoftSkills, setOperatorSoftSkills] = useState([]);
+  // Retrieve operator soft skills
+  React.useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/setting/softcompetence")
+      .then((response) => {
+        const filteredOperatorSoftSkills = response.data.filter((item) => {
+          const id_station = item.id_station;
+          const id_operateur = item.id_operateur;
+
+          // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
+          return (
+            planningList.find(
+              (planningItem) => planningItem.id_operateur === id_operateur
+            ) &&
+            (id_station === 52 || id_station === 65)
+          );
+        });
+        setOperatorSoftSkills(filteredOperatorSoftSkills);
+      });
+  }, [planningList]);
+
+  // Process pour récupérer le niveau Tut pour la station assignée
+  const [operatorSkills, setOperatorSkills] = useState([]);
+  React.useEffect(() => {
+    axios.get("http://127.0.0.1:8000/setting/competence").then((response) => {
+      const filteredOperatorSkills = response.data.filter((item) => {
+        const id_station = item.id_station;
+        const id_operateur = item.id_operateur;
+
+        // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
+        return (
+          planningList.find(
+            (planningItem) => planningItem.id_station === id_station
+          ) &&
+          planningList.find(
+            (planningItem) => planningItem.id_operateur === id_operateur
+          )
+        );
+      });
+      setOperatorSkills(filteredOperatorSkills);
+    });
+  }, [planningList]);
+
+  // Créez un objet pour stocker les compétences uniques avec l'ID le plus élevé
+  const uniqueSkills = {};
+
+  // Parcourez la liste des compétences
+  for (const skill of operatorSkills) {
+    const key = `${skill.id_operateur}-${skill.id_station}`;
+
+    // Vérifiez si cette combinaison de nom et de station existe déjà et si l'ID actuel est plus élevé
+    if (!uniqueSkills[key] || skill.id > uniqueSkills[key].id) {
+      uniqueSkills[key] = skill;
+    }
+  }
+
+  // Convertissez l'objet en une liste d'éléments uniques
+  const uniqueSkillList = Object.values(uniqueSkills);
+
+  // Pour chaque opérateur, on ajoute la bonne compétence et son niveau
+  for (const key in planningList) {
+    if (planningList.hasOwnProperty(key)) {
+      const planning = planningList[key];
+      const id_operateur = planning.id_operateur;
+      const id_station = planning.id_station;
+
+      planning.SST = operatorSoftSkills.find(
+        (item) => item.id_station === 52 && item.id_operateur === id_operateur
+      )?.level_competence;
+      planning.SST = planning.SST ? planning.SST : 0;
+
+      planning.Leader_5S = operatorSoftSkills.find(
+        (item) => item.id_station === 65 && item.id_operateur === id_operateur
+      )?.level_competence;
+      planning.Leader_5S = planning.Leader_5S ? planning.Leader_5S : 0;
+
+      planning.Niv = uniqueSkillList.find(
+        (item) =>
+          item.id_station === id_station && item.id_operateur === id_operateur
+      )?.level_competence;
+      planning.Niv = planning.Niv ? planning.Niv : 0;
+    }
+  }
+
+  //console.log(planningList);
 
   // On trie par id_station de façon ascendante
   planningList.sort((a, b) => a.id_station - b.id_station);
@@ -214,6 +306,9 @@ function Home() {
         groupedData[equipeKey] = {
           id_station: item.id_station,
           id_operateur: item.id_operateur,
+          Leader_5S: item.Leader_5S,
+          SST: item.SST,
+          Niv: item.Niv,
           jours: {
             lundi: [],
             mardi: [],
@@ -223,11 +318,12 @@ function Home() {
           },
         };
       }
+      console.log(groupedData);
       const jourData = groupedData[equipeKey].jours[item.day];
       jourData.push({
-        "5S": 0,
-        SST: 0,
-        Niv: 0,
+        Leader_5S: groupedData[equipeKey].Leader_5S,
+        SST: groupedData[equipeKey].SST,
+        Niv: groupedData[equipeKey].Niv,
       });
     });
 
@@ -249,20 +345,16 @@ function Home() {
             {equipe.jours[jour].length > 0 ? (
               <>
                 <td className="home-operator-name">{equipe.id_operateur}</td>
-                {equipe.jours[jour].map((data, dataIndex) => (
-                  <React.Fragment key={dataIndex}>
-                    <td>{data["5S"] ? "🟢" : "" }</td>
-                    <td>{data.SST ? "🟢" : "" }</td>
-                    <td>{data.Niv ? "🟢" : "" }</td>
-                  </React.Fragment>
-                ))}
+                <td>{equipe.Leader_5S ? "🟢" : ""}</td>
+                <td>{equipe.SST ? "🔴" : ""}</td>
+                <td>{equipe.Niv}</td>
               </>
             ) : (
               <>
-                <td>""</td>
-                <td>""</td>
-                <td>""</td>
-                <td>""</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </>
             )}
           </React.Fragment>
