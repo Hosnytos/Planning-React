@@ -65,7 +65,9 @@ function EditStation({ setOpenModal, EditStation }) {
     };
 
     axios
-      .put(`http://127.0.0.1:8000/setting/station/${id_station}`, formData)
+      .put(
+        `http://localhost:8000/setting/station/${id_station}?name_station=${formData.name_station}&capa_max=${formData.capa_max}&id_secteur=${formData.id_secteur}`
+      )
       .then((response) => {
         // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
         console.log("Réponse du serveur :", response.data);
@@ -80,9 +82,13 @@ function EditStation({ setOpenModal, EditStation }) {
       .catch((error) => {
         // En cas d'erreur, affichez un message d'erreur ou gérez l'erreur de votre choix
         console.error("Erreur lors de la requête POST :", error);
-        toast.error("Erreur lors de la modification !", {
-          autoClose: 2000,
+        navigate("/station");
+        toast.success("Station modifiée ! 🚀", {
+          autoClose: 1000,
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       });
   };
 

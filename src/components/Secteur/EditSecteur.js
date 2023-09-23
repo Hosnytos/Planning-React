@@ -26,7 +26,7 @@ function EditSecteur({ setOpenModal, EditSecteur }) {
     };
 
     axios
-      .put(`http://127.0.0.1:8000/setting/secteur/${id_secteur}`, formData)
+      .put(`http://127.0.0.1:8000/setting/secteur/${id_secteur}?name_secteur=${formData.name_secteur}`)
       .then((response) => {
         // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
         console.log("Réponse du serveur :", response.data);

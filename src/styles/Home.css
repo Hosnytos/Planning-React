@@ -259,77 +259,77 @@ td {
 /* ============= Code couleur pour chaque station ============*/
 
 /* 506 FIC */
-.home-station[data-station="506 FIC"] {
+.home-station[data-station="27"] {
   background-color: #de78f5;
   /* color: #48274f; */
   color: white;
 }
 
 /* 507Controle HT */
-.home-station[data-station="507Controle HT"] {
+.home-station[data-station="22"] {
   background-color: #85a5cc;
   /* color: #30395c; */
   color: white;
 }
 
 /* 507 PrÈhenseur Habillage */
-.home-station[data-station="507 Prï¿½henseur Habillage"] {
+.home-station[data-station="25"] {
   background-color: #08c5d1;
   /* color: #00353f; */
   color: white;
 }
 
 /* 508 EQF1 */
-.home-station[data-station="508 EQF1"] {
+.home-station[data-station="28"] {
   background-color: #03a688;
   /* color: #10403b; */
   color: white;
 }
 
 /* 508 EQF2 */
-.home-station[data-station="508 EQF2"] {
+.home-station[data-station="26"] {
   background-color: #c0d904;
   /* color: #3a592c; */
   color: white;
 }
 
 /* 508 EQF3 */
-.home-station[data-station="508 EQF3"] {
+.home-station[data-station="32"] {
   background-color: #8c8303;
   /* color: #244009; */
   color: white;
 }
 
 /* 508 EQF4 */
-.home-station[data-station="508 EQF4"] {
+.home-station[data-station="24"] {
   background-color: #8abf9c;
   /* color: #10403b; */
   color: white;
 }
 
 /* 509 Controle BT1 */
-.home-station[data-station="509 Controle BT1"] {
+.home-station[data-station="29"] {
   background-color: #f99f72;
   /* color: #5b374d; */
   color: white;
 }
 
 /* 509 Controle Final */
-.home-station[data-station="509 Controle Final"] {
+.home-station[data-station="31"] {
   background-color: #be9cc7;
   /* color: #211a44; */
   color: white;
 }
 
 /* 509 ContrÙle BT2 */
-.home-station[data-station="509 ContrÙle BT2"] {
+.home-station[data-station="30"] {
   background-color: #c684b5;
   /* color: #291527; */
   color: white;
 }
 
 /* 510 Emballage */
-.home-station[data-station="510 Emballage"] {
+.home-station[data-station="23"] {
   background-color: #f09569;
   /* color: #6f4824; */
   color: white;

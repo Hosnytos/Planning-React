@@ -20,7 +20,7 @@ function Home() {
     "2022-52",
     "2023-01",
     "2023-02",
-    "2023-13",
+    "2023-03",
     "2023-04",
     "2023-05",
     "2023-06",
@@ -105,13 +105,13 @@ function Home() {
   // Planning en fonction des paramètres année-semaine et équipe Mat ou AM
   const [planningList, setPlanningList] = useState([]);
   const [planningPresenceChoice, setPlanningPresenceChoice] =
-  useState("present");
+    useState("present");
 
-// Datas affichage présence total et absence total
-const [totalPresence, setTotalPresence] = useState(0);
-const [totalAbsence, setTotalAbsence] = useState(0);
+  // Datas affichage présence total et absence total
+  const [totalPresence, setTotalPresence] = useState(0);
+  const [totalAbsence, setTotalAbsence] = useState(0);
 
-// Utilisez reduce pour diviser les éléments en deux tableaux distincts
+  // Utilisez reduce pour diviser les éléments en deux tableaux distincts
 
   React.useEffect(() => {
     axios.get("http://localhost:8000/setting/planning").then((response) => {
@@ -119,20 +119,9 @@ const [totalAbsence, setTotalAbsence] = useState(0);
         const week = item.week;
         const id_shift = item.id_shift;
         //const id_station = item.id_station;
-        return (
-          week === "2022-52" &&
-          //id_shift === "Equipe " + shiftSelected + " "
-          id_shift === shiftSelected
-          // && (
-          //   id_station !== 67 &&
-          //   id_station !== 68 &&
-          //   id_station !== 69 &&
-          //   id_station !== 70 &&
-          //   id_station !== 71
-          // )
-        );
+        return week === "2022-52" && id_shift === shiftSelected;
       });
-      
+
       const absencePlanningList = [];
       const presencePlanningList = [];
 
@@ -159,7 +148,35 @@ const [totalAbsence, setTotalAbsence] = useState(0);
           ? presencePlanningList
           : absencePlanningList;
 
-      setPlanningList(updatedPlanningList);
+      // Mettez à jour planningList avec les résultats de l'appel API
+      Promise.all(
+        updatedPlanningList.map((planning) =>
+          axios
+            .get(`http://127.0.0.1:8000/idToCleanName/${planning.id_station}`)
+            .then((response) => response.data.clean_name)
+            .catch((error) => {
+              console.error(
+                `Erreur lors de l'appel API pour id_station ${planning.id_station}:`,
+                error
+              );
+              return null; // ou une valeur par défaut appropriée si vous préférez
+            })
+        )
+      )
+        .then((cleanNames) => {
+          // cleanNames contient les résultats de chaque appel API, dans le même ordre que updatedPlanningList
+
+          // Mettez à jour les éléments de updatedPlanningList avec les clean_names correspondants
+          updatedPlanningList.forEach((planning, index) => {
+            planning.clean_name_station = cleanNames[index];
+          });
+
+          // Mettez à jour planningList
+          setPlanningList(updatedPlanningList);
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la récupération des données :", error);
+        });
     });
   }, [shiftSelected, planningPresenceChoice]);
 
@@ -364,15 +381,16 @@ const [totalAbsence, setTotalAbsence] = useState(0);
   //================================================ CODE DU DESSUS OK NORMALEMENT =================================
   //===============================================================================================================
 
-  // Fonction pour regrouper les données par name_station et name_operateur
+  // Fonction pour regrouper les données par clean_name_station et name_operateur
   const groupData = () => {
     const groupedData = {};
 
     planningList.forEach((item) => {
-      const equipeKey = `${item.name_station}_${item.name_operateur}`;
+      const equipeKey = `${item.clean_name_station}_${item.name_operateur}`;
       if (!groupedData[equipeKey]) {
         groupedData[equipeKey] = {
-          name_station: item.name_station,
+          id_station: item.id_station,
+          clean_name_station: item.clean_name_station,
           name_operateur: item.name_operateur,
           Leader_5S: item.Leader_5S,
           SST: item.SST,
@@ -400,26 +418,25 @@ const [totalAbsence, setTotalAbsence] = useState(0);
   const equipeData = groupData();
 
   const renderTableData = () => {
-    let previousStation = null;
     return equipeData.map((equipe) => {
-      const isDifferentStation = equipe.id_station !== previousStation;
-      previousStation = equipe.id_station;
       return (
         <tr
           key={`${equipe.id_station}_${equipe.id_operateur}`}
-          className={isDifferentStation ? "different-station home-station" : "home-station"}
-          data-station={equipe.name_station}
+          className={
+            "home-station"
+          }
+          data-station={equipe.id_station}
         >
           <td>
-          <p  data-station={equipe.name_station}>
-              {equipe.name_station}
-            </p>
+            <p data-station={equipe.id_station}>{equipe.clean_name_station}</p>
           </td>
           {["lundi", "mardi", "mercredi", "jeudi", "vendredi"].map((jour) => (
             <React.Fragment key={jour}>
               {equipe.jours[jour].length > 0 ? (
                 <>
-                  <td className="home-operator-name">{equipe.name_operateur}</td>
+                  <td className="home-operator-name">
+                    {equipe.name_operateur}
+                  </td>
                   <td>{equipe.Leader_5S ? "⚪" : ""}</td>
                   <td>{equipe.SST ? "🔵" : ""}</td>
                   <td>{equipe.Niv}</td>
@@ -464,7 +481,7 @@ const [totalAbsence, setTotalAbsence] = useState(0);
           <div className="main-planning-items">
             {/* PRESENCE */}
             <div className="presence-selection">
-            <input
+              <input
                 type="radio"
                 name="presence"
                 id="present-list"

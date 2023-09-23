@@ -188,6 +188,7 @@ function Competence() {
             responsiveMd={true}
             responsiveLg={true}
             responsiveXl={true}
+            paginationPerPage={20}
             pagination
             fixedHeader
             fixedHeaderScrollHeight="440px"

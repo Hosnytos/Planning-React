@@ -113,7 +113,9 @@ function EditOperator({ setOpenModal, EditOperator }) {
     };
 
     axios
-      .put(`http://127.0.0.1:8000/setting/operateur/${id_operateur}`, formData)
+      .put(
+        `http://127.0.0.1:8000/setting/operateur/${id_operateur}?name_operateur=${formData.name_operateur}&id_shift=${formData.id_shift}&home_station=${formData.home_station}&start_date=${formData.start_date}&end_date=${formData.end_date}&isTemp=${formData.isTemp}&active_status=${formData.active_status}`
+      )
       .then((response) => {
         // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
         console.log("Réponse du serveur :", response.data);
@@ -201,7 +203,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
               </div>
             </Grid>
             <Grid item xs={6}>
-            <FormControl variant="outlined">
+              <FormControl variant="outlined">
                 <InputLabel>Type</InputLabel>
                 <MuiSelect
                   value={selectedType}
