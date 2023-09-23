@@ -12,16 +12,15 @@ export class FormSaiseOperator extends Component {
     e.preventDefault();
     const operators = this.props.values.operators;
     const shift = this.props.values.shift;
-    if (operators.length > 0) {
-      if (shift.length !== 0) {
-        this.props.nextStep();
-      } else {
-        toast.error("Veuillez saisir un horaire !", {
-          autoClose: 2000,
+    if (shift.length !== 0) {
+      if (operators.length <= 0) {
+        toast.warning("Vous n'avez pas sélectionné d'opérateur !", {
+          autoClose: 1000,
         });
       }
+      this.props.nextStep();
     } else {
-      toast.error("Veuillez saisir au moins un opérateur !", {
+      toast.error("Veuillez saisir un horaire !", {
         autoClose: 2000,
       });
     }
