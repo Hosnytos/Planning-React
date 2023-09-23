@@ -104,6 +104,14 @@ function Home() {
 
   // Planning en fonction des paramètres année-semaine et équipe Mat ou AM
   const [planningList, setPlanningList] = useState([]);
+  const [planningPresenceChoice, setPlanningPresenceChoice] =
+  useState("present");
+
+// Datas affichage présence total et absence total
+const [totalPresence, setTotalPresence] = useState(0);
+const [totalAbsence, setTotalAbsence] = useState(0);
+
+// Utilisez reduce pour diviser les éléments en deux tableaux distincts
 
   React.useEffect(() => {
     axios.get("http://localhost:8000/setting/planning").then((response) => {
@@ -112,7 +120,7 @@ function Home() {
         const id_shift = item.id_shift;
         //const id_station = item.id_station;
         return (
-          week === "2023-15" &&
+          week === "2022-52" &&
           //id_shift === "Equipe " + shiftSelected + " "
           id_shift === shiftSelected
           // && (
@@ -124,9 +132,36 @@ function Home() {
           // )
         );
       });
-      setPlanningList(filteredSoftSkills);
+      
+      const absencePlanningList = [];
+      const presencePlanningList = [];
+
+      filteredSoftSkills.forEach((item) => {
+        // Remplacez ces valeurs par celles que vous souhaitez vérifier
+        const absenceStations = [67, 68, 69, 70, 71];
+        if (absenceStations.includes(item.id_station)) {
+          absencePlanningList.push(item);
+        } else {
+          presencePlanningList.push(item);
+        }
+      });
+
+      // Calculate total presence and total absence
+      const totalPresenceCount = presencePlanningList.length;
+      const totalAbsenceCount = absencePlanningList.length;
+
+      setTotalPresence(totalPresenceCount);
+      setTotalAbsence(totalAbsenceCount);
+
+      // Utilisez la variable planningPresenceChoice pour choisir entre presencePlanningList et absencePlanningList
+      const updatedPlanningList =
+        planningPresenceChoice === "present"
+          ? presencePlanningList
+          : absencePlanningList;
+
+      setPlanningList(updatedPlanningList);
     });
-  }, [shiftSelected]);
+  }, [shiftSelected, planningPresenceChoice]);
 
   //Process pour récupérer les noms des opérateurs
   const [operatorInfos, setOperatorInfos] = useState([]);
@@ -241,7 +276,7 @@ function Home() {
     }
   }
 
-  //console.log(planningList);
+  // console.log(planningList);
 
   // On trie par id_station de façon ascendante
   planningList.sort((a, b) => a.id_station - b.id_station);
@@ -367,11 +402,11 @@ function Home() {
   const renderTableData = () => {
     let previousStation = null;
     return equipeData.map((equipe) => {
-      const isDifferentStation = equipe.name_station !== previousStation;
-      previousStation = equipe.name_station;
+      const isDifferentStation = equipe.id_station !== previousStation;
+      previousStation = equipe.id_station;
       return (
         <tr
-          key={`${equipe.name_station}_${equipe.id_operateur}`}
+          key={`${equipe.id_station}_${equipe.id_operateur}`}
           className={isDifferentStation ? "different-station home-station" : "home-station"}
           data-station={equipe.name_station}
         >
@@ -413,14 +448,14 @@ function Home() {
           <div className="home-presence-dashboard">
             <p>Présence total</p>
 
-            <span>805 hrs</span>
+            <span> {totalPresence * 7} hrs</span>
           </div>
 
           {/* PRESENCE TOTAL HEURE */}
           <div className="home-absence-dashboard">
             <p>Absence total</p>
 
-            <span>10 hrs</span>
+            <span>{totalAbsence * 7} hrs</span>
           </div>
         </div>
 
@@ -429,15 +464,24 @@ function Home() {
           <div className="main-planning-items">
             {/* PRESENCE */}
             <div className="presence-selection">
-              <input
+            <input
                 type="radio"
                 name="presence"
                 id="present-list"
-                checked
-              ></input>
+                value="present"
+                checked={planningPresenceChoice === "present"}
+                onChange={(e) => setPlanningPresenceChoice(e.target.value)}
+              />
               <label htmlFor="present-list">Présents</label>
 
-              <input type="radio" name="presence" id="absent-list"></input>
+              <input
+                type="radio"
+                name="presence"
+                id="absent-list"
+                value="absent"
+                checked={planningPresenceChoice === "absent"}
+                onChange={(e) => setPlanningPresenceChoice(e.target.value)}
+              />
               <label htmlFor="absent-list">Absents</label>
             </div>
 

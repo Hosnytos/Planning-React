@@ -20,13 +20,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const typeItems = [
-  { id: "false", title: "Tit" },
-  { id: "true", title: "Temp" },
-];
+const typeList = ["0", "1", "2", "3"];
 const statusItems = [
-  { id: "true", title: "Actif" },
   { id: "false", title: "Hors-ligne" },
+  { id: "true", title: "Actif" },
 ];
 
 function AddOperator({ setOpenModal }) {
@@ -36,6 +33,7 @@ function AddOperator({ setOpenModal }) {
     setSelectedStationItem(event.target.value);
   };
 
+  const [selectedType, setselectedType] = useState("");
   const [selectedShiftItem, setSelectedShiftItem] = useState("");
   const [stations, setStations] = useState([]);
   const [selectedDateEntree, setSelectedDateEntree] = useState(null);
@@ -50,6 +48,9 @@ function AddOperator({ setOpenModal }) {
   };
   const handleShiftChange = (event) => {
     setSelectedShiftItem(event.target.value);
+  };
+  const handleTypeChange = (event) => {
+    setselectedType(event.target.value);
   };
 
   const [shiftList, setShiftList] = useState([]);
@@ -70,13 +71,14 @@ function AddOperator({ setOpenModal }) {
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     const formData = {
+      id_operateur: event.target.id_operateur.value,
       name_operateur: event.target.fullName.value,
       id_shift: selectedShiftItem,
       home_station: selectedStationItem,
       start_date: selectedDateEntree,
       end_date: selectedDateFin,
-      isTemp: event.target.type.value,
-      active_status: event.target.status.value,
+      isTemp: selectedType,
+      active_status: event.target.status.value === "true" ? 1 : 0,
     };
 
     axios
@@ -123,6 +125,13 @@ function AddOperator({ setOpenModal }) {
                 required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
+                name="id_operateur"
+                label="ID"
+              />
+              <TextField
+                required
+                style={{ marginTop: "8px", marginBottom: "16px" }}
+                variant="outlined"
                 name="fullName"
                 label="Nom"
               />
@@ -162,6 +171,22 @@ function AddOperator({ setOpenModal }) {
               </div>
             </Grid>
             <Grid item xs={6}>
+              <FormControl variant="outlined">
+                <InputLabel>Type</InputLabel>
+                <MuiSelect
+                  value={selectedType}
+                  onChange={handleTypeChange}
+                  label="Type"
+                  style={{ marginTop: "8px", marginBottom: "16px" }}
+                >
+                  <MenuItem value="">Sélectionner un élément</MenuItem>
+                  {typeList.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </MuiSelect>
+              </FormControl>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   disableToolbar
@@ -192,7 +217,6 @@ function AddOperator({ setOpenModal }) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              <Controls.RadioGroup name="type" label="Type" items={typeItems} />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"

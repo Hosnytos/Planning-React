@@ -64,7 +64,7 @@ function Operator() {
     },
     {
       name: "Type",
-      selector: (row) => (row.isTemp ? <p>Temp</p> : <p>Not temp</p>),
+      selector: (row) => row.isTemp,
       sortable: true,
     },
     {

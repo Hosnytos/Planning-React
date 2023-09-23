@@ -20,13 +20,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const typeItems = [
-  { id: "false", title: "Tit" },
-  { id: "true", title: "Temp" },
-];
+const typeList = ["0", "1", "2", "3"];
 const statusItems = [
-  { id: "true", title: "Actif" },
   { id: "false", title: "Hors-ligne" },
+  { id: "true", title: "Actif" },
 ];
 
 function EditOperator({ setOpenModal, EditOperator }) {
@@ -75,7 +72,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
     setSelectedType(event.target.value);
   };
   const [selectedStatus, setSelectedStatus] = useState(
-    EditOperator.active_status.toString()
+    EditOperator.active_status === 1 ? "true" : "false"
   );
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
@@ -111,8 +108,8 @@ function EditOperator({ setOpenModal, EditOperator }) {
       home_station: selectedStationItem,
       start_date: selectedDateEntree,
       end_date: selectedDateFin,
-      isTemp: event.target.type.value,
-      active_status: event.target.status.value,
+      isTemp: selectedType,
+      active_status: event.target.status.value === "true" ? 1 : 0,
     };
 
     axios
@@ -204,6 +201,22 @@ function EditOperator({ setOpenModal, EditOperator }) {
               </div>
             </Grid>
             <Grid item xs={6}>
+            <FormControl variant="outlined">
+                <InputLabel>Type</InputLabel>
+                <MuiSelect
+                  value={selectedType}
+                  onChange={handleTypeChange}
+                  label="Type"
+                  style={{ marginTop: "8px", marginBottom: "16px" }}
+                >
+                  <MenuItem value="">Sélectionner un élément</MenuItem>
+                  {typeList.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </MuiSelect>
+              </FormControl>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   disableToolbar
@@ -234,13 +247,6 @@ function EditOperator({ setOpenModal, EditOperator }) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              <Controls.RadioGroup
-                name="type"
-                label="Type"
-                items={typeItems}
-                value={selectedType}
-                onChange={handleTypeChange}
-              />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"
