@@ -348,18 +348,11 @@ td {
     size: landscape A3;
   } */
 
-  .main-home {
-    overflow-y: visible !important;
-  }
-  .main-home-datas-section,
-  .main-planning-table {
-    display: block;
+  .home-pdf-section{
+    display: none;
   }
 
-  table {
-    border-collapse: collapse; /* Assurez-vous que la bordure de la table est correctement rendue */
-  }
-  tr {
-    page-break-inside: avoid;
+  .main-home {
+    overflow-y: visible !important;
   }
 }

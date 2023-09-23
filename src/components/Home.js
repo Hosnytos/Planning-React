@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../styles/Home.css";
 import Switch from "@mui/material/Switch";
 import Stack from "@mui/material/Stack";
@@ -166,7 +166,7 @@ const [totalAbsence, setTotalAbsence] = useState(0);
   //Process pour récupérer les noms des opérateurs
   const [operatorInfos, setOperatorInfos] = useState([]);
   React.useEffect(() => {
-    axios.get("http://127.0.0.1:8000/operateurs").then((response) => {
+    axios.get("http://127.0.0.1:8000/setting/operateur").then((response) => {
       setOperatorInfos(response.data);
     });
   }, []);
