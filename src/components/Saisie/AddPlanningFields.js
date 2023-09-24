@@ -106,20 +106,21 @@ function AddPlanningFields({
 
   // Retrieve selected operator soft skills
   React.useEffect(() => {
-    axios.get("http://127.0.0.1:8000/setting/softcompetence").then((response) => {
-      const filteredOperatorSoftSkills = response.data.filter((item) => {
-        const id_station = item.id_station;
-        const id_operateur = item.id_operateur;
+    axios
+      .get("http://127.0.0.1:8000/setting/softcompetence")
+      .then((response) => {
+        const filteredOperatorSoftSkills = response.data.filter((item) => {
+          const id_station = item.id_station;
+          const id_operateur = item.id_operateur;
 
-        // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
-        return (
-          id_operateur === selectedOperateur &&
-          (id_station === 52 ||
-            id_station === 65)
-        );
+          // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
+          return (
+            id_operateur === selectedOperateur &&
+            (id_station === 52 || id_station === 65)
+          );
+        });
+        setOperatorSoftSkills(filteredOperatorSoftSkills);
       });
-      setOperatorSoftSkills(filteredOperatorSoftSkills);
-    });
   }, [selectedOperateur]);
 
   // Créez un objet pour stocker les correspondances entre les stations
@@ -159,16 +160,20 @@ function AddPlanningFields({
    */
   const handleValidation = (op, st, jr) => {
     // Assign each soft skill to the selected operator
-    const SST = operatorSoftSkills.find(item => item.id_station === 52)?.level_competence;
-    const Leader_5S = operatorSoftSkills.find(item => item.id_station === 65)?.level_competence;
+    const SST = operatorSoftSkills.find(
+      (item) => item.id_station === 52
+    )?.level_competence;
+    const Leader_5S = operatorSoftSkills.find(
+      (item) => item.id_station === 65
+    )?.level_competence;
 
     const newPlanningList = jr.map((jour) => ({
       personne: op,
       shift: values.shift,
-      tl: currenTL,
+      tl: currenTL === "teamE1" ? "SESA66501" : "SESA529147",
       station: st,
       jour: jour,
-      date: format(addDays(weekStartDate, jours.indexOf(jour)), "dd-MM-yyyy"),
+      date: format(addDays(weekStartDate, jours.indexOf(jour)), "yyyy-MM-dd"),
       semaine: `${currentYear}-${currentWeek}`,
       SST: SST ? SST : 0,
       leader5S: Leader_5S ? Leader_5S : 0,
@@ -222,16 +227,24 @@ function AddPlanningFields({
       // Ajouter 7 jours pour obtenir la date de la semaine prochaine
       const nextWeekDate = addDays(weekStartDate, selectedDayIndex + 7);
 
+      // Assign each soft skill to the selected operator
+      const SST = operatorSoftSkills.find(
+        (item) => item.id_station === 52
+      )?.level_competence;
+      const Leader_5S = operatorSoftSkills.find(
+        (item) => item.id_station === 65
+      )?.level_competence;
+
       return {
         personne: op,
         shift: values.shift,
-        tl: currenTL,
+        tl: currenTL === "teamE1" ? "SESA66501" : "SESA529147",
         station: st,
         jour: jour,
         date: format(nextWeekDate, "yyyy-MM-dd"),
         semaine: `${nextWeekYear}-${nextWeek}`,
-        SST: 0,
-        leader5S: 0,
+        SST: SST ? SST : 0,
+        leader5S: Leader_5S ? Leader_5S : 0,
         tut: 0,
       };
     });

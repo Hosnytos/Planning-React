@@ -18,15 +18,15 @@ function Home() {
     "2022-50",
     "2022-51",
     "2022-52",
-    "2023-01",
-    "2023-02",
-    "2023-03",
-    "2023-04",
-    "2023-05",
-    "2023-06",
-    "2023-07",
-    "2023-08",
-    "2023-09",
+    "2023-1",
+    "2023-2",
+    "2023-3",
+    "2023-4",
+    "2023-5",
+    "2023-6",
+    "2023-7",
+    "2023-8",
+    "2023-9",
     "2023-10",
     "2023-11",
     "2023-12",
@@ -119,7 +119,7 @@ function Home() {
         const week = item.week;
         const id_shift = item.id_shift;
         //const id_station = item.id_station;
-        return week === "2022-52" && id_shift === shiftSelected;
+        return week === weeks[selectedWeekIndex] && id_shift === shiftSelected;
       });
 
       const absencePlanningList = [];
@@ -178,7 +178,7 @@ function Home() {
           console.error("Erreur lors de la récupération des données :", error);
         });
     });
-  }, [shiftSelected, planningPresenceChoice]);
+  }, [shiftSelected, planningPresenceChoice, selectedWeekIndex]);
 
   //Process pour récupérer les noms des opérateurs
   const [operatorInfos, setOperatorInfos] = useState([]);

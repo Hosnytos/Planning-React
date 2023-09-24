@@ -308,6 +308,46 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       )}`;
       alert(errorMessage);
     }
+
+    // Créez un tableau pour stocker vos objets FormData
+    const formDataArray = [];
+
+    // Parcourez chaque élément de planningList
+    planningList.forEach((planning) => {
+      // Créez un objet JavaScript pour chaque élément de planningList
+      const formData = {
+        id_operateur: planning.personne,
+        id_user: currenTL === "teamE1" ? "SESA66501" : "SESA529147",
+        id_shift: parseInt(planning.shift),
+        id_station: planning.station,
+        date: planning.date,
+        week: planning.semaine,
+        day: planning.jour,
+      };
+
+      // Ajoutez l'objet formData au tableau formDataArray
+      formDataArray.push(formData);
+    });
+
+    // Effectuez la requête POST avec Axios en envoyant formDataArray
+    axios
+      .post("http://127.0.0.1:8000/setting/planning", formDataArray, {
+        headers: {
+          "Content-Type": "application/json", // Définissez le type de contenu comme multipart/form-data
+        },
+      })
+      .then((response) => {
+        // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
+        console.log("Réponse du serveur :", response.data);
+        // ... Le reste de votre code en cas de réussite ...
+      })
+      .catch((error) => {
+        // En cas d'erreur, affichez un message d'erreur ou gérez l'erreur de votre choix
+        console.error("Erreur lors de la requête POST :", error);
+        // ... Le reste de votre code en cas d'erreur ...
+      });
+
+    console.log(formDataArray);
   };
 
   const handlePlanningList = (newPL) => {
@@ -383,7 +423,7 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       return {
         personne: op,
         shift: values.shift,
-        tl: currenTL,
+        tl: currenTL === "teamE1" ? "SESA66501" : "SESA529147",
         station: st,
         jour: jour,
         date: format(nextWeekDate, "yyyy-MM-dd"),
@@ -444,9 +484,42 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
 
           // Mettez à jour les éléments de updatedPlanningList avec les clean_names correspondants
 
+          function removeAccents(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          }
           function cleanName(name) {
-            // Supprimez les titres "M.", "Mme.", "Mlle." avec ou sans espaces
-            const cleanedName = name.replace(/^(M\.|Mme?\.|Mlle\.|\s)+/i, "");
+            const nameWithoutAccents = removeAccents(name);
+            // Tableau de motifs à rechercher
+            const patterns = [
+              "M ",
+              "M. ",
+              "M.",
+              "M; ",
+              "M;",
+              "Mme. ",
+              "Mme.",
+              "Mme ",
+              "Mme",
+              "Mlle. ",
+              "Mlle",
+              "Mlle ",
+            ];
+
+            // Fonction pour échapper les caractères spéciaux dans une chaîne pour une utilisation dans une expression régulière
+            function escapeRegExp(string) {
+              return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            }
+
+            // Créez une expression régulière en utilisant le tableau de motifs
+            const patternRegex = new RegExp(
+              `^(${patterns
+                .map((pattern) => escapeRegExp(pattern))
+                .join("|")})(\\s)?`,
+              "i"
+            );
+
+            // Supprimez les correspondances de motifs de la chaîne sans accents
+            const cleanedName = nameWithoutAccents.replace(patternRegex, "");
 
             // Convertissez la chaîne résultante en majuscules
             const upperCaseName = cleanedName.toUpperCase();
@@ -459,8 +532,8 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
 
             for (const name in operatorsNameMap) {
               const normalizedName = cleanName(name);
-              console.log("Name :>> ", name);
-              console.log("CleanName :>> ", cleanName(name));
+              // console.log("Name :>> ", name);
+              // console.log("CleanName :>> ", cleanName(name));
 
               if (normalizedOperateur.includes(normalizedName)) {
                 planning.id_op = operatorsNameMap[name];
@@ -514,7 +587,7 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
               la quantité :{" "}
               <span className="metrics-span">
                 {" "}
-                {parseFloat(fullfillDatas.QTY).toFixed(2) * 100} %
+                {parseInt(parseFloat(fullfillDatas.QTY) * 100)} %
               </span>
             </p>
 
@@ -522,7 +595,7 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
               le KE :{" "}
               <span className="metrics-span">
                 {" "}
-                {parseFloat(fullfillDatas.KTE).toFixed(2) * 100} %
+                {parseInt(parseFloat(fullfillDatas.KTE) * 100)} %
               </span>
             </p>
           </div>
