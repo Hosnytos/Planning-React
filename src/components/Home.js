@@ -420,13 +420,7 @@ function Home() {
   const renderTableData = () => {
     return equipeData.map((equipe) => {
       return (
-        <tr
-          key={`${equipe.id_station}_${equipe.id_operateur}`}
-          className={
-            "home-station"
-          }
-          data-station={equipe.id_station}
-        >
+        <tr className={"home-station"} data-station={equipe.id_station}>
           <td>
             <p data-station={equipe.id_station}>{equipe.clean_name_station}</p>
           </td>

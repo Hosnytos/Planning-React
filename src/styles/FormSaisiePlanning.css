@@ -8,6 +8,58 @@
   width: 100%;
 }
 
+.saisie-fullfill-add {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fullfill-saisie-button {
+  border: none;
+  border-radius: 6px;
+  background-color: #3dcd58;
+  box-shadow: 0 2px #2e8a3f;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  height: 30px;
+  width: 75px;
+  padding: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fullfill-saisie-button:active {
+  border: none;
+  border-radius: 6px;
+  background-color: #2da443;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  height: 25px;
+  padding: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fullfill-metrics {
+  display: flex;
+  flex-direction: row;
+  font-weight: 600;
+}
+
+.fullfill-metrics p {
+  margin-right: 15px;
+}
+
+.metrics-span {
+  font-style: italic;
+  color: rgb(26, 26, 26);
+}
+
 .button-add-planning {
   height: 40px;
   width: 40px;
@@ -43,7 +95,7 @@
 
 .btn-pl-main {
   display: flex;
-  padding-top: 25px;
+  margin-top: 10px;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
 }

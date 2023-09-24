@@ -7,8 +7,11 @@ import { BiPlus } from "react-icons/bi";
 import { RxCross2 } from "react-icons/rx";
 import AddPlanningFields from "./AddPlanningFields";
 import "../../styles/FormSaisiePlanning.css";
+import { format, addDays, getISOWeek, startOfWeek } from "date-fns";
+import { async } from "q";
 
 const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
+  const [fullfillDatas, setFullFillDatas] = useState({});
   const [addPlanningFields, setAddPlanningFields] = useState(false);
   const [operators, setOperators] = useState([]);
   const [planningList, setPlanningList] = useState([]);
@@ -20,13 +23,19 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   //const [operatorSearch, setOperatorSearch] = useState([]);
   const stationURL = "http://127.0.0.1:8000/setting/station";
   const competenceURL = "http://127.0.0.1:8000/setting/competence";
+  const fullfillURL = "http://127.0.0.1:8000/setting/fullfll/";
 
   useEffect(() => {
     setOperators(values.operators);
   }, [values.operators]);
 
   useEffect(() => {
-    setPlanningList(JSON.parse(localStorage.getItem("planningList")) || []);
+    const planningListFromStorage = localStorage.getItem("planningList");
+    const parsedPlanningList = planningListFromStorage
+      ? JSON.parse(planningListFromStorage)
+      : [];
+
+    setPlanningList(parsedPlanningList);
   }, []);
 
   React.useEffect(() => {
@@ -112,13 +121,13 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   const column = [
     {
       name: "5S",
-      selector: (row) => row.leader5S ? "🟢" : "",
+      selector: (row) => (row.leader5S ? "🟢" : ""),
       sortable: true,
       wrap: true,
     },
     {
       name: "SST",
-      selector: (row) => row.SST ? "🟢" : "",
+      selector: (row) => (row.SST ? "🟢" : ""),
       sortable: true,
       wrap: true,
     },
@@ -260,7 +269,9 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       if (tut === 1) {
         const hasTut3 = planningList.some(
           (item) =>
-            item.date === date && item.name_station === name_station && item.tut >= 3
+            item.date === date &&
+            item.name_station === name_station &&
+            item.tut >= 3
         );
         if (!hasTut3) {
           missingTut3.push({ date, name_station });
@@ -284,7 +295,9 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
       } else {
         // Affichez un message d'erreur pour les dates et les stations manquantes de Tut3
         const errorMessage = `Il doit y avoir au moins un Tuteur de niveau 3 pour les dates et les stations suivantes : ${missingTut3
-          .map((item) => `\nDate : ${item.date} | Station : ${item.name_station}`)
+          .map(
+            (item) => `\nDate : ${item.date} | Station : ${item.name_station}`
+          )
           .join(", ")}`;
         alert(errorMessage);
       }
@@ -300,8 +313,11 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
   const handlePlanningList = (newPL) => {
     setPlanningList((prevList) => [...prevList, ...newPL]);
     // Sauvegarder les données dans le localStorage
-    const storedPlanningList =
-      JSON.parse(localStorage.getItem("planningList")) || [];
+    const planningListFromStorage = localStorage.getItem("planningList");
+    const parsedPlanningList = planningListFromStorage
+      ? JSON.parse(planningListFromStorage)
+      : [];
+    const storedPlanningList = parsedPlanningList;
     const updatedPlanningList = [...storedPlanningList, ...newPL];
     localStorage.setItem("planningList", JSON.stringify(updatedPlanningList));
   };
@@ -325,18 +341,202 @@ const FormSaisiePlanning = ({ nextStep, prevStep, values, handlePlanning }) => {
     }
   };
 
+  const currenTL = localStorage.getItem("currentUser");
+  const [operatorsName, setOperatorsName] = useState([]);
+
+  React.useEffect(() => {
+    axios.get("http://127.0.0.1:8000/setting/operateur").then((response) => {
+      setOperatorsName(response.data);
+    });
+  }, []);
+
+  // Créez un objet pour stocker les correspondances entre les stations et les opérateurs
+  const operatorsNameMap = {};
+
+  // Parcourez le tableau des stations et créez une correspondance avec les opérateurs
+  operatorsName.forEach((opName) => {
+    operatorsNameMap[opName.name_operateur] = opName.id_operateur;
+  });
+
+  //==== Gestion de date , semaine et jours ======
+
+  //Calcule à partir de la date actuelle de la semaine actuelle et de la semaine prochaine
+  const currentDate = new Date();
+  const currentWeekNumber = getISOWeek(currentDate);
+  const nextWeekNumber = currentWeekNumber + 1;
+  const currentYear = format(currentDate, "yyyy");
+  const nextWeekYear = currentWeekNumber === 52 ? currentYear + 1 : currentYear;
+
+  const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
+  const currentWeek = currentWeekNumber.toString().padStart(2, "0");
+  const nextWeek = nextWeekNumber.toString().padStart(2, "0");
+  const weekStartDate = startOfWeek(currentDate, { weekStartsOn: 1 });
+
+  const handleValidationNextWeek = (op, st, sst, lead5s, niv, jr) => {
+    const newPlanningList = jr.map((jour) => {
+      // Récupérer l'index du jour sélectionné dans la liste 'jours'
+      const selectedDayIndex = jours.indexOf(jour);
+
+      // Ajouter 7 jours pour obtenir la date de la semaine prochaine
+      const nextWeekDate = addDays(weekStartDate, selectedDayIndex + 7);
+      // console.log("st :>> ", st);
+      return {
+        personne: op,
+        shift: values.shift,
+        tl: currenTL,
+        station: st,
+        jour: jour,
+        date: format(nextWeekDate, "yyyy-MM-dd"),
+        semaine: `${nextWeekYear}-${nextWeek}`,
+        SST: sst,
+        leader5S: lead5s,
+        tut: niv,
+      };
+    });
+
+    // Mettez à jour le state avec le nouveau tableau
+    handlePlanningList(newPlanningList);
+  };
+
+  const handleFullFill = () => {
+    localStorage.setItem("planningList", []);
+    setPlanningList([]);
+    axios
+      .get("http://127.0.0.1:8000/setting/fullfll/90")
+      .then((response) => {
+        setFullFillDatas(response.data);
+
+        //transforme les données du model en tableau de list d'objet
+        const updatedPL = [];
+
+        for (const stationKey in fullfillDatas.Planning) {
+          const [operateur, [niv, SST, leader5S]] =
+            fullfillDatas.Planning[stationKey];
+
+          const stationInfo = {
+            station: stationKey.slice(0, -2),
+            operateur: operateur,
+            niv: niv,
+            leader5S: leader5S,
+            SST: SST,
+          };
+
+          updatedPL.push(stationInfo);
+        }
+
+        // Mettez à jour planningList avec les résultats de l'appel API
+        Promise.all(
+          updatedPL.map((planning) =>
+            axios
+              .get(`http://127.0.0.1:8000/cleanNameToId/${planning.station}`)
+              .then((response) => response.data.id_station)
+              .catch((error) => {
+                console.error(
+                  `Erreur lors de l'appel API pour id_station ${planning.station}:`,
+                  error
+                );
+                return null; // ou une valeur par défaut appropriée si vous préférez
+              })
+          )
+        ).then((cleanNames) => {
+          console.log("operatorsNameMap :>> ", operatorsNameMap);
+          // cleanNames contient les résultats de chaque appel API, dans le même ordre que updatedPlanningList
+
+          // Mettez à jour les éléments de updatedPlanningList avec les clean_names correspondants
+
+          function cleanName(name) {
+            // Supprimez les titres "M.", "Mme.", "Mlle." avec ou sans espaces
+            const cleanedName = name.replace(/^(M\.|Mme?\.|Mlle\.|\s)+/i, "");
+
+            // Convertissez la chaîne résultante en majuscules
+            const upperCaseName = cleanedName.toUpperCase();
+
+            return upperCaseName;
+          }
+
+          updatedPL.forEach((planning, index) => {
+            const normalizedOperateur = planning.operateur;
+
+            for (const name in operatorsNameMap) {
+              const normalizedName = cleanName(name);
+              console.log("Name :>> ", name);
+              console.log("CleanName :>> ", cleanName(name));
+
+              if (normalizedOperateur.includes(normalizedName)) {
+                planning.id_op = operatorsNameMap[name];
+                break;
+              }
+            }
+
+            planning.id_st = cleanNames[index];
+          });
+
+          updatedPL.forEach((entry) => {
+            let op = entry.id_op;
+            let st = entry.id_st;
+
+            let sst = entry.SST;
+            let lead5s = entry.leader5S;
+            let niv = entry.niv;
+            console.log("st :>> ", st);
+
+            handleValidationNextWeek(op, st, sst, lead5s, niv, jours);
+          });
+        });
+
+        console.log("TEST :>> ", updatedPL);
+
+        // Vider le localStorage du planningList
+        // localStorage.setItem("planningList", []);
+
+        // Mettez à jour le localStorage
+        // localStorage.setItem("planningList", JSON.stringify(planningList));
+        // console.log("updatedPL :>> ", updatedPL[0].station);
+      })
+      .catch((error) => {
+        console.error("Erreur lors du lancement de prepro.py : ", error);
+      });
+  };
+
   return (
     <div className="main-planningForm">
       <div>
-        <div className="add-pl-section">
-          <button
-            className="button-add-planning"
-            onClick={() => {
-              setAddPlanningFields(true);
-            }}
-          >
-            <BiPlus />
+        <div className="saisie-fullfill-add">
+          <button onClick={handleFullFill} className="fullfill-saisie-button">
+            FullFill
           </button>
+
+          <div className="fullfill-metrics">
+            <div>
+              <p>Chances d'atteindre :</p>
+            </div>
+            <p>
+              la quantité :{" "}
+              <span className="metrics-span">
+                {" "}
+                {parseFloat(fullfillDatas.QTY).toFixed(2) * 100} %
+              </span>
+            </p>
+
+            <p>
+              le KE :{" "}
+              <span className="metrics-span">
+                {" "}
+                {parseFloat(fullfillDatas.KTE).toFixed(2) * 100} %
+              </span>
+            </p>
+          </div>
+
+          <div className="add-pl-section">
+            <button
+              className="button-add-planning"
+              onClick={() => {
+                setAddPlanningFields(true);
+              }}
+            >
+              <BiPlus />
+            </button>
+          </div>
         </div>
 
         <div>

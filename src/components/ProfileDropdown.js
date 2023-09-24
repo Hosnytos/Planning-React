@@ -40,11 +40,7 @@ function ProfileDropdown() {
     <div className="dropdown">
       <div className="teamleader-title">Team Leader</div>
       <hr></hr>
-      <DropdownItem linkValue="/profile" leftIcon={<MdSwitchAccount />}>
-        Mon compte
-      </DropdownItem>
 
-      <hr></hr>
       <DropdownItem
         handleOnClick={logout}
         leftIcon={<RiLogoutCircleRLine />}

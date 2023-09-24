@@ -52,7 +52,7 @@ function ProfileBar() {
   return (
     <div className="profilebar-main">
       <div className="preprocess-section">
-        <button onClick={handlePreprocess}>Preprocessing</button>
+        <button onClick={handlePreprocess}>Mise à jour hebdo </button>
       </div>
 
       <div className="main-profile">
