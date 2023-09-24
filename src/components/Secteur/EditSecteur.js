@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../styles/EditSecteur.css";
-import CloseWindow from "./CloseWindow";
+import "../../styles/EditSecteur.css";
+import CloseWindow from "../CloseWindow";
 import { Grid, TextField } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ function EditSecteur({ setOpenModal, EditSecteur }) {
     };
 
     axios
-      .put(`http://127.0.0.1:8000/setting/secteur/${id_secteur}`, formData)
+      .put(`http://127.0.0.1:8000/setting/secteur/${id_secteur}?name_secteur=${formData.name_secteur}`)
       .then((response) => {
         // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
         console.log("Réponse du serveur :", response.data);
@@ -66,6 +66,7 @@ function EditSecteur({ setOpenModal, EditSecteur }) {
           <Grid container className="secteur-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 variant="outlined"
                 name="secteurName"
                 label="Nom"

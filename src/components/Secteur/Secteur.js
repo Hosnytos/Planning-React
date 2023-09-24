@@ -1,57 +1,46 @@
 import React, { useState } from "react";
-import "../styles/Station.css";
-import colors from "../styles/colors";
+import "../../styles/Secteur.css";
+import colors from "../../styles/colors";
 import DataTable from "react-data-table-component";
 import { FaSearch } from "react-icons/fa";
 import { BiPlus } from "react-icons/bi";
 import { MdModeEdit } from "react-icons/md";
 import axios from "axios";
-import AddStation from "./AddStation";
-import EditStation from "./EditStation";
+import AddSecteur from "./AddSecteur";
+import EditSecteur from "./EditSecteur";
 
-function Station() {
-  const [addStation, setAddStation] = useState(false);
-  const [editStation, setEditStation] = useState(null);
+function Secteur() {
+  const [addSecteur, setAddSecteur] = useState(false);
+  const [editSecteur, setEditSecteur] = useState(null);
 
-  const baseURL = "http://127.0.0.1:8000/setting/station";
-  const [stations, setStations] = useState([]);
-  const [stationSearch, setStationSearch] = useState([]);
+  const baseURL = "http://127.0.0.1:8000/setting/secteur";
+  const [Secteurs, setSecteurs] = useState([]);
+  const [SecteurSearch, setSecteurSearch] = useState([]);
 
   React.useEffect(() => {
     axios.get(baseURL).then((response) => {
-      setStations(response.data);
-      setStationSearch(response.data);
+      setSecteurs(response.data);
+      setSecteurSearch(response.data);
     });
   }, []);
   const column = [
     {
       name: "Nom",
-      selector: (row) => row.name_station,
+      selector: (row) => row.name_secteur,
       sortable: true,
       wrap: true,
     },
-    {
-      name: "Capacité max",
-      selector: (row) => row.capa_max,
-      sortable: true,
-    },
-    {
-      name: "Id Secteur",
-      selector: (row) => row.id_secteur,
-      sortable: true,
-    },
-    {
-      name: "Id Station",
-      selector: (row) => row.id_station,
-      sortable: true,
-    },
+    // {
+    //   name: "Id Secteur",
+    //   selector: (row) => row.id_secteur,
+    // },
     {
       name: "Action",
       cell: (row) => (
         <div>
           <button
-            className="btn-edit-station"
-            onClick={() => handleEditStation(row)}
+            className="btn-edit-secteur"
+            onClick={() => handleEditSecteur(row)}
           >
             <MdModeEdit />
           </button>
@@ -93,47 +82,47 @@ function Station() {
     },
   };
 
-  function handleStationSearch(event) {
-    const newStation = stations.filter((row) => {
-      return row.name_station
+  function handleSecteurSearch(event) {
+    const newSecteur = Secteurs.filter((row) => {
+      return row.name_secteur
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
     });
 
-    setStationSearch(newStation);
+    setSecteurSearch(newSecteur);
   }
 
-  const handleEditStation = (stations) => {
-    setEditStation(stations);
+  const handleEditSecteur = (Secteurs) => {
+    setEditSecteur(Secteurs);
   };
 
   return (
-    <div className="main-station">
+    <div data-testid="secteur-main" className="main-secteur">
       <div>
-        <div className="station-search-bar">
+        <div className="secteur-search-bar">
           <div className="input-wrapper">
             <FaSearch id="search-icon" />
             <input
               type="text"
               placeholder="Recherche..."
-              onChange={handleStationSearch}
+              onChange={handleSecteurSearch}
             />
           </div>
           <button
-            className="button-add-station"
+            className="button-add-secteur"
             onClick={() => {
-              setAddStation(true);
+              setAddSecteur(true);
             }}
           >
             <BiPlus />
           </button>
         </div>
-        <hr className="station-search-hr" />
+        <hr className="secteur-search-hr" />
         <div>
           <DataTable
             className="data-table-container"
             columns={column}
-            data={stationSearch}
+            data={SecteurSearch}
             responsive={true}
             responsiveSm={true}
             responsiveMd={true}
@@ -149,12 +138,12 @@ function Station() {
           ></DataTable>
         </div>
       </div>
-      <div className="add-station-modal">
-        {addStation && <AddStation setOpenModal={setAddStation} />}
-        {editStation && (
-          <EditStation
-            setOpenModal={setEditStation}
-            EditStation={editStation}
+      <div className="add-secteur-modal">
+        {addSecteur && <AddSecteur setOpenModal={setAddSecteur} />}
+        {editSecteur && (
+          <EditSecteur
+            setOpenModal={setEditSecteur}
+            EditSecteur={editSecteur}
           />
         )}
       </div>
@@ -162,4 +151,4 @@ function Station() {
   );
 }
 
-export default Station;
+export default Secteur;

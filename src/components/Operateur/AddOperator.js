@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "../styles/AddOperator.css";
-import CloseWindow from "./CloseWindow";
+import "../../styles/AddOperator.css";
+import CloseWindow from "../CloseWindow";
 import { Grid, TextField } from "@mui/material";
-import Controls from "../components/controls/Controls";
+import Controls from "../controls/Controls";
 import {
   FormControl,
   InputLabel,
@@ -20,13 +20,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const typeItems = [
-  { id: "false", title: "Tit" },
-  { id: "true", title: "Temp" },
-];
+const typeList = ["0", "1", "2", "3"];
 const statusItems = [
-  { id: "true", title: "Actif" },
   { id: "false", title: "Hors-ligne" },
+  { id: "true", title: "Actif" },
 ];
 
 function AddOperator({ setOpenModal }) {
@@ -36,8 +33,9 @@ function AddOperator({ setOpenModal }) {
     setSelectedStationItem(event.target.value);
   };
 
+  const [selectedType, setselectedType] = useState("");
   const [selectedShiftItem, setSelectedShiftItem] = useState("");
-
+  const [stations, setStations] = useState([]);
   const [selectedDateEntree, setSelectedDateEntree] = useState(null);
   const handleDateEntreeChange = (date) => {
     const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
@@ -51,9 +49,11 @@ function AddOperator({ setOpenModal }) {
   const handleShiftChange = (event) => {
     setSelectedShiftItem(event.target.value);
   };
+  const handleTypeChange = (event) => {
+    setselectedType(event.target.value);
+  };
 
   const [shiftList, setShiftList] = useState([]);
-  const [stationList, setStationList] = useState([]);
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/shift`).then((response) => {
@@ -64,22 +64,21 @@ function AddOperator({ setOpenModal }) {
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
-      const stationIds = response.data.map((item) => item.id_station);
-      setStationList(stationIds);
+      setStations(response.data);
     });
   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     const formData = {
-      id_card: event.target.CardID.value,
+      id_operateur: event.target.id_operateur.value,
       name_operateur: event.target.fullName.value,
       id_shift: selectedShiftItem,
       home_station: selectedStationItem,
       start_date: selectedDateEntree,
       end_date: selectedDateFin,
-      isTemp: event.target.type.value,
-      active_status: event.target.status.value,
+      isTemp: selectedType,
+      active_status: event.target.status.value === "true" ? 1 : 0,
     };
 
     axios
@@ -123,16 +122,18 @@ function AddOperator({ setOpenModal }) {
           <Grid container className="operator-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
+                style={{ marginTop: "8px", marginBottom: "16px" }}
+                variant="outlined"
+                name="id_operateur"
+                label="ID"
+              />
+              <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="fullName"
                 label="Nom"
-              />
-              <TextField
-                style={{ marginTop: "8px", marginBottom: "16px" }}
-                variant="outlined"
-                name="CardID"
-                label="CardID"
               />
               <div className="add-operator-div-dropdown">
                 <FormControl variant="outlined">
@@ -144,9 +145,9 @@ function AddOperator({ setOpenModal }) {
                     style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
-                    {stationList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {stations.map((item) => (
+                      <MenuItem key={item.name_station} value={item.id_station}>
+                        {item.name_station}
                       </MenuItem>
                     ))}
                   </MuiSelect>
@@ -170,6 +171,22 @@ function AddOperator({ setOpenModal }) {
               </div>
             </Grid>
             <Grid item xs={6}>
+              <FormControl variant="outlined">
+                <InputLabel>Type</InputLabel>
+                <MuiSelect
+                  value={selectedType}
+                  onChange={handleTypeChange}
+                  label="Type"
+                  style={{ marginTop: "8px", marginBottom: "16px" }}
+                >
+                  <MenuItem value="">Sélectionner un élément</MenuItem>
+                  {typeList.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </MuiSelect>
+              </FormControl>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   disableToolbar
@@ -200,7 +217,6 @@ function AddOperator({ setOpenModal }) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              <Controls.RadioGroup name="type" label="Type" items={typeItems} />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"

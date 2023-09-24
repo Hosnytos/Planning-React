@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../styles/AddStation.css";
-import CloseWindow from "./CloseWindow";
+import "../../styles/AddStation.css";
+import CloseWindow from "../CloseWindow";
 import { Grid, TextField } from "@mui/material";
 import {
   FormControl,
@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function AddStation({ setOpenModal }) {
   const navigate = useNavigate();
   const [selectedSecteurItem, setSelectedSecteurItem] = useState("");
@@ -21,12 +20,11 @@ function AddStation({ setOpenModal }) {
     setSelectedSecteurItem(event.target.value);
   };
 
-  const [secteurList, setSecteurList] = useState([]);
+  const [secteurs, setSecteurs] = useState([]);
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/secteur`).then((response) => {
-      const secteurIds = response.data.map((item) => item.id_secteur);
-      setSecteurList(secteurIds);
+      setSecteurs(response.data);
     });
   }, []);
 
@@ -79,12 +77,14 @@ function AddStation({ setOpenModal }) {
           <Grid container className="station-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="stationName"
                 label="Nom"
               />
               <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="capaMax"
@@ -100,17 +100,16 @@ function AddStation({ setOpenModal }) {
                     style={{ marginTop: "8px", marginBottom: "16px" }}
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
-                    {secteurList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {secteurs.map((item) => (
+                      <MenuItem key={item.name_secteur} value={item.id_secteur}>
+                        {item.name_secteur}
                       </MenuItem>
                     ))}
                   </MuiSelect>
                 </FormControl>
               </div>
             </Grid>
-            <Grid item xs={6}>
-            </Grid>
+            <Grid item xs={6}></Grid>
           </Grid>
           <div className="footer">
             <button

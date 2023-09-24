@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../styles/EditStation.css";
-import CloseWindow from "./CloseWindow";
+import "../../styles/EditStation.css";
+import CloseWindow from "../CloseWindow";
 import { Grid, TextField } from "@mui/material";
 import {
   FormControl,
@@ -17,7 +17,7 @@ function EditStation({ setOpenModal, EditStation }) {
   const navigate = useNavigate();
   const id_station = EditStation.id_station;
   const [station, setStation] = useState(null);
-  const [secteurtList, setSecteurList] = useState([]);
+  const [secteurs, setSecteurs] = useState([]);
 
   const [selectedStationName, setSelectedStationName] = useState(
     EditStation.name_station
@@ -40,7 +40,7 @@ function EditStation({ setOpenModal, EditStation }) {
   const handleSecteurChange = (event) => {
     setSelectedSecteur(event.target.value);
   };
-  
+
   React.useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/setting/station/${id_station}`)
@@ -51,11 +51,9 @@ function EditStation({ setOpenModal, EditStation }) {
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/secteur`).then((response) => {
-      const secteurIds = response.data.map((item) => item.id_secteur);
-      setSecteurList(secteurIds);
+      setSecteurs(response.data);
     });
   }, []);
-
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
@@ -67,7 +65,9 @@ function EditStation({ setOpenModal, EditStation }) {
     };
 
     axios
-      .put(`http://127.0.0.1:8000/setting/station/${id_station}`, formData)
+      .put(
+        `http://localhost:8000/setting/station/${id_station}?name_station=${formData.name_station}&capa_max=${formData.capa_max}&id_secteur=${formData.id_secteur}`
+      )
       .then((response) => {
         // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
         console.log("Réponse du serveur :", response.data);
@@ -82,9 +82,13 @@ function EditStation({ setOpenModal, EditStation }) {
       .catch((error) => {
         // En cas d'erreur, affichez un message d'erreur ou gérez l'erreur de votre choix
         console.error("Erreur lors de la requête POST :", error);
-        toast.error("Erreur lors de la modification !", {
-          autoClose: 2000,
+        navigate("/station");
+        toast.success("Station modifiée ! 🚀", {
+          autoClose: 1000,
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       });
   };
 
@@ -107,6 +111,7 @@ function EditStation({ setOpenModal, EditStation }) {
           <Grid container className="station-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 variant="outlined"
                 name="nameStation"
                 label="Nom"
@@ -115,6 +120,7 @@ function EditStation({ setOpenModal, EditStation }) {
                 onChange={handleStationNameChange}
               />
               <TextField
+                required
                 variant="outlined"
                 name="capacityMax"
                 label="Capacité max"
@@ -134,9 +140,9 @@ function EditStation({ setOpenModal, EditStation }) {
                     <MenuItem value={station?.id_secteur}>
                       Sélectionner un secteur
                     </MenuItem>
-                    {secteurtList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {secteurs.map((item) => (
+                      <MenuItem key={item.name_secteur} value={item.id_secteur}>
+                        {item.name_secteur}
                       </MenuItem>
                     ))}
                   </MuiSelect>

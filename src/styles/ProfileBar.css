@@ -1,10 +1,37 @@
-.main-profile {
+.profilebar-main {
   background-color: white;
-  height: 10%;
-  margin-bottom: 30px;
-  padding-top: 10px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10%;
+  margin-bottom: 20px;
+  padding: 10px 10px 0 25px;
   width: 100%;
+}
+
+.preprocess-section button {
+  border: none;
+  border-radius: 5px;
+  background-color: #0170d3;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  height: 35px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px #094a83;
+}
+
+.preprocess-section button:active {
+  background-color: #095fa9;
+  box-shadow: 0 0.5px #094a83;
+}
+
+.main-profile {
+  display: flex;
+
   align-items: center;
   justify-content: flex-end;
 }

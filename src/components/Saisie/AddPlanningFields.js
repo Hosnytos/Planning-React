@@ -33,18 +33,22 @@ function AddPlanningFields({
   handlePlanningList,
   values,
 }) {
-  const [stationList, setStationList] = useState([]);
-  React.useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
-      const stationIds = response.data.map((item) => item.id_station);
-      setStationList(stationIds);
-    });
-  }, []);
+  // const [stationList, setStationList] = useState([]);
+  // React.useEffect(() => {
+  //   axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
+  //     const stationIds = response.data.map((item) => item.id_station);
+  //     setStationList(stationIds);
+  //   });
+  // }, []);
 
   const [selectedOperateur, setSelectedOperateur] = useState("");
+  const [operators, setOperators] = useState([]);
   const [selectedStationItem, setSelectedStationItem] = useState("");
+  const [stations, setStations] = useState([]);
+  const [operatorStations, setOperatorStations] = useState([]);
   const [selectedSemaineItem, setSelectedSemaineItem] = useState("");
   const [selectedJours, setSelectedJours] = useState([]);
+  const [operatorSoftSkills, setOperatorSoftSkills] = useState([]);
 
   const handleOperateurChange = (event) => {
     setSelectedOperateur(event.target.value);
@@ -57,12 +61,83 @@ function AddPlanningFields({
   const handleSemaineChange = (event) => {
     setSelectedSemaineItem(event.target.value);
   };
-  const rdnNumb = () => {
-    var randomNum = Math.random();
 
-    // Arrondit le nombre à 0 ou 1
-    return Math.round(randomNum);
-  };
+  // Transform operators ID into names
+  React.useEffect(() => {
+    axios.get(`http://127.0.0.1:8000/setting/operateur`).then((response) => {
+      const filteredOperators = Object.values(response.data).filter((item) => {
+        const name_operateur = item.name_operateur;
+        return operatorsList.includes(name_operateur);
+      });
+      setOperators(filteredOperators);
+    });
+  }, [operatorsList]);
+
+  // Retrieve selected operator stations
+  React.useEffect(() => {
+    axios.get(`http://127.0.0.1:8000/setting/competence`).then((response) => {
+      const filteredOperatorStations = Object.values(response.data).filter(
+        (item) => {
+          const id_operateur = item.id_operateur;
+          return id_operateur === selectedOperateur;
+        }
+      );
+      setOperatorStations(filteredOperatorStations);
+    });
+  }, [selectedOperateur]);
+
+  // Créez un ensemble (Set) pour stocker les id_station uniques
+  const uniqueStations = new Set();
+
+  // Filtrer les objets en fonction de l'id_station et ajouter les id_station uniques à l'ensemble
+  const filteredUniqueStations = operatorStations.filter((item) => {
+    const isUnique = !uniqueStations.has(item.id_station);
+    if (isUnique) {
+      uniqueStations.add(item.id_station);
+    }
+    return isUnique;
+  });
+
+  React.useEffect(() => {
+    axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
+      setStations(response.data);
+    });
+  }, []);
+
+  // Retrieve selected operator soft skills
+  React.useEffect(() => {
+    axios.get("http://127.0.0.1:8000/setting/softcompetence").then((response) => {
+      const filteredOperatorSoftSkills = response.data.filter((item) => {
+        const id_station = item.id_station;
+        const id_operateur = item.id_operateur;
+
+        // Vous pouvez utiliser la méthode find pour vérifier si id_station et id_operateur existent dans planningList
+        return (
+          id_operateur === selectedOperateur &&
+          (id_station === 52 ||
+            id_station === 65)
+        );
+      });
+      setOperatorSoftSkills(filteredOperatorSoftSkills);
+    });
+  }, [selectedOperateur]);
+
+  // Créez un objet pour stocker les correspondances entre les stations
+  const operatorStationMap = {};
+
+  // Parcourez le tableau des stations et créez une correspondance avec leur nom
+  stations.forEach((station) => {
+    operatorStationMap[station.id_station] = station.name_station;
+  });
+
+  // Maintenant, ajoutez le nom de la station correspondante à chaque station
+  for (const key in filteredUniqueStations) {
+    if (filteredUniqueStations.hasOwnProperty(key)) {
+      const station = filteredUniqueStations[key];
+      const id_station = station.id_station;
+      station.name_station = operatorStationMap[id_station];
+    }
+  }
 
   //Getsion Selection jours checkbox
   const handleCheckboxChange = (jour) => (event) => {
@@ -75,6 +150,7 @@ function AddPlanningFields({
     }
   };
 
+  const currenTL = localStorage.getItem("currentUser");
   /*
    Fonction qui prends les entrées du formulaire pour le rajouter au planning
    op -> operateur
@@ -82,16 +158,20 @@ function AddPlanningFields({
    jr -> tableau de**contenant les jours où va travailler l'opérateur
    */
   const handleValidation = (op, st, jr) => {
+    // Assign each soft skill to the selected operator
+    const SST = operatorSoftSkills.find(item => item.id_station === 52)?.level_competence;
+    const Leader_5S = operatorSoftSkills.find(item => item.id_station === 65)?.level_competence;
+
     const newPlanningList = jr.map((jour) => ({
       personne: op,
       shift: values.shift,
-      tl: values.tl,
+      tl: currenTL,
       station: st,
       jour: jour,
       date: format(addDays(weekStartDate, jours.indexOf(jour)), "dd-MM-yyyy"),
       semaine: `${currentYear}-${currentWeek}`,
-      SST: rdnNumb(),
-      leader5S: 0,
+      SST: SST ? SST : 0,
+      leader5S: Leader_5S ? Leader_5S : 0,
       tut: 0,
     }));
 
@@ -145,7 +225,7 @@ function AddPlanningFields({
       return {
         personne: op,
         shift: values.shift,
-        tl: values.tl,
+        tl: currenTL,
         station: st,
         jour: jour,
         date: format(nextWeekDate, "yyyy-MM-dd"),
@@ -224,9 +304,12 @@ function AddPlanningFields({
                     required
                   >
                     <MenuItem value="">Sélectionner un élément</MenuItem>
-                    {operatorsList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {operators.map((item) => (
+                      <MenuItem
+                        key={item.name_operateur}
+                        value={item.id_operateur}
+                      >
+                        {item.name_operateur}
                       </MenuItem>
                     ))}
                   </MuiSelect>
@@ -243,9 +326,9 @@ function AddPlanningFields({
                     required
                   >
                     <MenuItem value="">Sélectionner la station</MenuItem>
-                    {stationList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {filteredUniqueStations.map((item) => (
+                      <MenuItem key={item.name_station} value={item.id_station}>
+                        {item.name_station}
                       </MenuItem>
                     ))}
                   </MuiSelect>

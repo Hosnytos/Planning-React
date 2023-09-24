@@ -1,6 +1,6 @@
 import React from "react";
-import "../styles/AddSecteur.css";
-import CloseWindow from "./CloseWindow";
+import "../../styles/AddSecteur.css";
+import CloseWindow from "../CloseWindow";
 import { Grid, TextField } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +57,7 @@ function AddSecteur({ setOpenModal }) {
           <Grid container className="secteur-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 variant="outlined"
                 name="secteurName"

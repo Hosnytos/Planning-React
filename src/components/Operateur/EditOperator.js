@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "../styles/EditOperator.css";
-import CloseWindow from "./CloseWindow";
+import "../../styles/EditOperator.css";
+import CloseWindow from "../CloseWindow";
 import { Grid, TextField } from "@mui/material";
-import Controls from "./controls/Controls";
+import Controls from "../controls/Controls";
 import {
   FormControl,
   InputLabel,
@@ -20,13 +20,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const typeItems = [
-  { id: "false", title: "Tit" },
-  { id: "true", title: "Temp" },
-];
+const typeList = ["0", "1", "2", "3"];
 const statusItems = [
-  { id: "true", title: "Actif" },
   { id: "false", title: "Hors-ligne" },
+  { id: "true", title: "Actif" },
 ];
 
 function EditOperator({ setOpenModal, EditOperator }) {
@@ -34,18 +31,13 @@ function EditOperator({ setOpenModal, EditOperator }) {
   const id_operateur = EditOperator.id_operateur;
   const [operator, setOperator] = useState(null);
   const [shiftList, setShiftList] = useState([]);
-  const [stationList, setStationList] = useState([]);
-
   const [selectedFullName, setSelectedFullName] = useState(
     EditOperator.name_operateur
   );
   const handleNameChange = (event) => {
     setSelectedFullName(event.target.value);
   };
-  const [selectedCardId, setSelectedCardId] = useState(EditOperator.id_card);
-  const handleCardIdChange = (event) => {
-    setSelectedCardId(event.target.value);
-  };
+  const [stations, setStations] = useState([]);
   const [selectedStationItem, setSelectedStationItem] = useState(
     EditOperator.home_station
   );
@@ -80,7 +72,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
     setSelectedType(event.target.value);
   };
   const [selectedStatus, setSelectedStatus] = useState(
-    EditOperator.active_status.toString()
+    EditOperator.active_status === 1 ? "true" : "false"
   );
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
@@ -103,8 +95,7 @@ function EditOperator({ setOpenModal, EditOperator }) {
 
   React.useEffect(() => {
     axios.get(`http://127.0.0.1:8000/setting/station`).then((response) => {
-      const stationIds = response.data.map((item) => item.id_station);
-      setStationList(stationIds);
+      setStations(response.data);
     });
   }, []);
 
@@ -112,18 +103,19 @@ function EditOperator({ setOpenModal, EditOperator }) {
     event.preventDefault(); // Prevent the default form submission behavior
     const formData = {
       id_operateur: id_operateur,
-      id_card: event.target.CardID.value,
       name_operateur: event.target.fullName.value,
       id_shift: selectedShiftItem,
       home_station: selectedStationItem,
       start_date: selectedDateEntree,
       end_date: selectedDateFin,
-      isTemp: event.target.type.value,
-      active_status: event.target.status.value,
+      isTemp: selectedType,
+      active_status: event.target.status.value === "true" ? 1 : 0,
     };
 
     axios
-      .put(`http://127.0.0.1:8000/setting/operateur/${id_operateur}`, formData)
+      .put(
+        `http://127.0.0.1:8000/setting/operateur/${id_operateur}?name_operateur=${formData.name_operateur}&id_shift=${formData.id_shift}&home_station=${formData.home_station}&start_date=${formData.start_date}&end_date=${formData.end_date}&isTemp=${formData.isTemp}&active_status=${formData.active_status}`
+      )
       .then((response) => {
         // Réponse réussie, vous pouvez afficher un message ou effectuer d'autres actions
         console.log("Réponse du serveur :", response.data);
@@ -163,20 +155,13 @@ function EditOperator({ setOpenModal, EditOperator }) {
           <Grid container className="operator-grid-container">
             <Grid item xs={6}>
               <TextField
+                required
                 variant="outlined"
                 name="fullName"
                 label="Nom"
                 value={selectedFullName || ""}
                 style={{ marginTop: "8px", marginBottom: "16px" }}
                 onChange={handleNameChange}
-              />
-              <TextField
-                variant="outlined"
-                name="CardID"
-                label="CardID"
-                value={selectedCardId || ""}
-                style={{ marginTop: "8px", marginBottom: "16px" }}
-                onChange={handleCardIdChange}
               />
               <div className="edit-operator-div-dropdown">
                 <FormControl variant="outlined">
@@ -190,9 +175,9 @@ function EditOperator({ setOpenModal, EditOperator }) {
                     <MenuItem value={operator?.home_station}>
                       Sélectionner une station
                     </MenuItem>
-                    {stationList.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {stations.map((item) => (
+                      <MenuItem key={item.name_station} value={item.id_station}>
+                        {item.name_station}
                       </MenuItem>
                     ))}
                   </MuiSelect>
@@ -218,6 +203,22 @@ function EditOperator({ setOpenModal, EditOperator }) {
               </div>
             </Grid>
             <Grid item xs={6}>
+              <FormControl variant="outlined">
+                <InputLabel>Type</InputLabel>
+                <MuiSelect
+                  value={selectedType}
+                  onChange={handleTypeChange}
+                  label="Type"
+                  style={{ marginTop: "8px", marginBottom: "16px" }}
+                >
+                  <MenuItem value="">Sélectionner un élément</MenuItem>
+                  {typeList.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </MuiSelect>
+              </FormControl>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   disableToolbar
@@ -248,13 +249,6 @@ function EditOperator({ setOpenModal, EditOperator }) {
                   }}
                 />
               </MuiPickersUtilsProvider>
-              <Controls.RadioGroup
-                name="type"
-                label="Type"
-                items={typeItems}
-                value={selectedType}
-                onChange={handleTypeChange}
-              />
               <Controls.RadioGroup
                 name="status"
                 label="Statut"

@@ -1,5 +1,5 @@
 import { React, useRef } from "react";
-import "../styles/SupportPage.css";
+import "../../styles/SupportPage.css";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,25 +9,44 @@ function SupportPage() {
 
   const sendSupportEmail = (e) => {
     e.preventDefault();
-    emailjs
-      .sendForm(
-        "service_xgrvdsp",
-        "template_v1joqud",
-        supportForm.current,
-        "y9YE02ncNeaAKZN9z"
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
-    toast.success("Votre message a été envoyé ! 🚀", {
-      autoClose: 2000,
-    });
-    e.target.reset();
+
+    const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ -]+$/;
+    const isValidName = nameRegex.test(e.target[0].value);
+
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
+    const isValidEmail = emailRegex.test(e.target[1].value);
+
+    const subjectRegex = /^[\w\d\s!@#$%^&*()_+-=<>?:"{}|,./;'\\[\]`~]+$/;
+    const isValidSubject = subjectRegex.test(e.target[2].value);
+
+    const messageRegex = /^[\w\d\s!@#$%^&*()_+-=<>?:"{}|,./;'\\[\]`~]+$/;
+    const isValidMessage = messageRegex.test(e.target[3].value);
+
+    if (isValidName && isValidEmail && isValidSubject && isValidMessage) {
+      emailjs
+        .sendForm(
+          "service_xgrvdsp",
+          "template_v1joqud",
+          supportForm.current,
+          "y9YE02ncNeaAKZN9z"
+        )
+        .then(
+          (result) => {
+            console.log(result.text);
+          },
+          (error) => {
+            console.log(error.text);
+          }
+        );
+      toast.success("Votre message a été envoyé ! 🚀", {
+        autoClose: 2000,
+      });
+      e.target.reset();
+    } else {
+      toast.error("Veuillez saisir correctement tous les champs", {
+        autoClose: 2000,
+      });
+    }
   };
 
   return (
@@ -77,7 +96,9 @@ function SupportPage() {
             ></textarea>
           </div>
           <div className="support-submit-container">
-            <button className="support-button">Envoyer</button>
+            <button data-testid="envoyer-support" className="support-button">
+              Envoyer
+            </button>
           </div>
         </div>
       </form>
